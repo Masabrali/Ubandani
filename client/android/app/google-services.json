@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1061990730959",
+    "firebase_url": "https://ubandani-c4b9d.firebaseio.com",
+    "project_id": "ubandani-c4b9d",
+    "storage_bucket": "ubandani-c4b9d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1061990730959:android:602657ad4e5905d4",
+        "android_client_info": {
+          "package_name": "com.ubandani"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1061990730959-re5a46vof0kkjjh8udlim0ad9dhmrvvh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ubandani",
+            "certificate_hash": "25df433380a0bbd54afa81949229411bb2db7e11"
+          }
+        },
+        {
+          "client_id": "1061990730959-h5mv1f39n8mp85tffurkl8cgj5vo5jii.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNYzDyCYVrXMahOv6OKFUMriGOVG7oJ50"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1061990730959-h5mv1f39n8mp85tffurkl8cgj5vo5jii.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
