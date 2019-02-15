@@ -75,12 +75,14 @@ const styles = StyleSheet.create({
     textAlignCenter: { textAlign: 'center' },
     textAlignRight: { textAlign: 'right' },
     textBold: { fontWeight: 'bold' },
+    textXXXLarge: { fontSize: 26 },
     textXXLarge: { fontSize: 24 },
     textXLarge: { fontSize: 22 },
     textLarge: { fontSize: 20 },
     textMedium: { fontSize: 18 },
     textSmall: { fontSize: 14 },
     textXSmall: { fontSize: 12 },
+     textXXSmall: { fontSize: 10 },
     textPrimary: { color: (isAndroid())? '#3f51b5':'#007bff' },
     textSecondary: { color: '#6c757d' },
     textSuccess: { color: '#5cb85c' },
@@ -139,6 +141,10 @@ const styles = StyleSheet.create({
     borderRight: {
         borderRightWidth: .8,
         borderRightColor: '#c1c1c7'
+    },
+    borderQuote: {
+        borderLeftWidth: 6,
+        borderLeftColor: '#c1c1c7',
     },
     borderPrimary: { borderColor: (isAndroid())? '#3f51b5':'#007bff' },
     borderDisabled: { borderColor: '#c1c1c7' },
@@ -288,7 +294,11 @@ const styles = StyleSheet.create({
     /**
     * Image Styles
     */
+    imageResizeModeCenter: { resizeMode: 'center' },
+    imageResizeModeRepeat: { resizeMode: 'repeat' },
+    imageResizeModeStretch: { resizeMode: 'stretch' },
     imageResizeModeContain: { resizeMode: 'contain' },
+    imageResizeModeCover: { resizeMode: 'cover' },
     /**
      * Cover Image
      */
@@ -313,6 +323,8 @@ const styles = StyleSheet.create({
     backgroundDark: { backgroundColor: '#000000' },
     backgroundWhite: { backgroundColor: '#ffffff' },
     backgroundTransparent: { backgroundColor: 'transparent' },
+    backgroundDarkTransluscent: { backgroundColor: 'rgba(0, 0, 0, .5)' },
+    backgroundWhiteTransluscent: { backgroundColor: 'rgba(255, 255, 255, .9)' },
     backgroundDisabled: { backgroundColor: '#c1c1c7' },
     backgroundSelected: { backgroundColor: '#f1f1f7' },
     backgroundWrapper: { backgroundColor: '#fef6f0' },
@@ -325,6 +337,7 @@ const styles = StyleSheet.create({
     backgroundUbandaniLight: { backgroundColor: '#fef6f0' },
     backgroundUbandaniDark: { backgroundColor: '#170f09' },
     backgroundKimyaKimyaLight:{ backgroundColor: '#fbfcfc'},
+    backgroundKimyaKimyaLightTransluscent: { backgroundColor: 'rgba(251, 252, 252, .9)' },
     backgroundFacebook: { backgroundColor: '#3b5998' },
     backgroundGoogle: { backgroundColor: '#ea4335' },
     /**

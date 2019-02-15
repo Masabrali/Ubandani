@@ -69,7 +69,7 @@ const Routes = function () {
                     <Scene key="contactus" component={ ContactUs } title="Contact Us" titleStyle={ titleStyle } backButtonTintColor={ Styles.textUbandaniLight.color } backTitle="Back" backTitleStyle={ backTitleStyle } hideNavBar={ false } navigationBarStyle={ navigationBarStyle } />
                     <Scene key="terms" component={ Terms } title="Terms and Privacy Policy" titleStyle={ titleStyle } backButtonTintColor={ Styles.textUbandaniLight.color } backTitle="Back" backTitleStyle={ backTitleStyle } hideNavBar={ false } navigationBarStyle={ navigationBarStyle } />
                     <Scene key="license" component={ License } title="License" titleStyle={ titleStyle } backButtonTintColor={ Styles.textUbandaniLight.color } backTitle="Back" backTitleStyle={ backTitleStyle } hideNavBar={ false } navigationBarStyle={ navigationBarStyle } />
-                    <Scene key="website" component={ Website } title="kimyakimya.app" titleStyle={ titleStyle } backButtonTintColor={ Styles.textUbandaniLight.color } backTitle="Back" backTitleStyle={ backTitleStyle } hideNavBar={ false } navigationBarStyle={ navigationBarStyle } />
+                    <Scene key="website" component={ Website } title="ubandani.com" titleStyle={ titleStyle } backButtonTintColor={ Styles.textUbandaniLight.color } backTitle="Back" backTitleStyle={ backTitleStyle } hideNavBar={ false } navigationBarStyle={ navigationBarStyle } />
                     
                 </Scene>
 

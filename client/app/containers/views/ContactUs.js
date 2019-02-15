@@ -60,7 +60,6 @@ class ContactUs extends Component<Props> {
         this.content = undefined;
 
         // Bind functions to this
-        this.back = this.back.bind(this);
         this.handleError = this.handleError.bind(this);
         this.messageFocused = this.messageFocused.bind(this);
         this.messageChanged = this.messageChanged.bind(this);
@@ -97,10 +96,6 @@ class ContactUs extends Component<Props> {
         }
 
         // return ( (isAndroid())? AndroidKeyboardAdjust.setAdjustPan() : 1 );
-    }
-
-    back() {
-        return Actions.pop();
     }
 
     handleError(error) {
@@ -224,7 +219,6 @@ class ContactUs extends Component<Props> {
     render() {
         return (
             <ContactUsComponent
-                back={ this.back }
                 screenshot={ this.state.screenshot }
                 messageFocused={ this.messageFocused }
                 messageChanged={ this.messageChanged }

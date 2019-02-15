@@ -2,6 +2,10 @@ package com.ubandani;
 
 import android.app.Application;
 
+import android.support.multidex.MultiDex;
+
+import android.content.Context;
+
 import android.content.IntentFilter;
 import com.facebook.react.ReactApplication;
 import com.centaurwarchief.smslistener.SmsListenerPackage;
@@ -14,6 +18,7 @@ import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import io.invertase.firebase.database.RNFirebaseDatabasePackage;
+import io.invertase.firebase.firestore.RNFirebaseFirestorePackage;
 // import io.invertase.firebase.functions.RNFirebaseFunctionsPackage;
 import io.invertase.firebase.storage.RNFirebaseStoragePackage;
 import io.invertase.firebase.links.RNFirebaseLinksPackage;
@@ -35,6 +40,7 @@ import java.util.List;
 public class MainApplication extends Application implements ReactApplication {
 
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+        
         @Override
         public boolean getUseDeveloperSupport() {
             return BuildConfig.DEBUG;
@@ -53,6 +59,7 @@ public class MainApplication extends Application implements ReactApplication {
                   new RNFirebaseAnalyticsPackage(),
                   new RNFirebaseAuthPackage(),
                   new RNFirebaseDatabasePackage(),
+                  new RNFirebaseFirestorePackage(),
                   // new RNFirebaseFunctionsPackage(),
                   new RNFirebaseStoragePackage(),
                   new RNFirebaseLinksPackage(),
@@ -82,7 +89,17 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     public void onCreate() {
+        
         super.onCreate();
+        
         SoLoader.init(this, /* native exopackage */ false);
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        
+        super.attachBaseContext(base);
+
+        MultiDex.install(this);
     }
 }

@@ -10,6 +10,7 @@ import _ from 'lodash'; // Version can be specified in package.json
  * Import Utilities
 */
 import isEmpty from '../../utilities/isEmpty';
+import isAndroid from '../../utilities/isAndroid';
 
 /**
  * Import other components
@@ -23,12 +24,12 @@ import Styles from '../styles';
 const Loader = function (props) {
     return (
         <Modal animationType='none' transparent={ true } visible={ props.visible } onRequestClose={_.noop}>
-            <Container style={ [Styles.loader] }>
+            <Container style={ [Styles.loader, { backgroundColor: props.backgroundColor || Styles.loader.backgroundColor }] }>
 
                 {
                     !isEmpty(props.title) && <Header noShadow style={ [Styles.backgroundTransparent] }>
-                        <Body style={ [Styles.paddingLeft] }>
-                            <Title style={ [Styles.textDark, Styles.textBold] }>{ props.title }</Title>
+                        <Body style={ [isAndrioid() && Styles.paddingLeft] }>
+                            <Title style={ [Styles.textBold, { color: props.titleColor || Styles.textDark.color }] }>{ props.title }</Title>
                         </Body>
                     </Header>
                 }
