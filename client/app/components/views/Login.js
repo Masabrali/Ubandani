@@ -44,7 +44,7 @@ const Login = function (props) {
 	        	</View>
         		<View style={ [Styles.doublePadding, Styles.marginBottom] }>
         			<Button block light bordered onPress={ props.verify } style={ [Styles.backgroundWrapperTransparent] }>
-        				<Text styles={ [Styles.textPlaceholder] }>Login</Text>
+        				<Text style={ [Styles.textPlaceholder] }>Login</Text>
         			</Button>
         		</View>
         		<Text style={ [Styles.textUbandaniLight, Styles.textSmall, Styles.marginBottom, Styles.textAlignCenter] }>Or</Text>

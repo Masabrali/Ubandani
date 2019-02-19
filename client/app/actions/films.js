@@ -24,93 +24,91 @@ export default function (films) {
 
 	// return fetch('countries.php', {}, setCountries);
 
-    return ( (dispatch) => {
+    return ( (dispatch) => (
 
-        return (
-            new Promise( (resolve, reject) => {
+        new Promise( (resolve, reject) => {
 
-                try {
+            try {
 
-                	const errorHandler= (error) => ( resolve({ errors: [error] }) );
+            	const errorHandler= (error) => ( resolve({ errors: [error] }) );
 
-                    const _handleError = (error) => {
+                const _handleError = (error) => {
+                    
+                    reject(error);
+
+                    return handleError(error);
+                };
+
+            	const dbRef = firebase.firestore().collection('films');
+
+            	let _films = {};
+                let addedFilms = {};
+                let changedFilms = {};
+                let removedFilms = {};
+                let _dispatch = undefined;
+
+                dbRef.onSnapshot( (films) => {
+                	
+                    addedFilms = {};
+                    changedFilms = {};
+                    removedFilms = {};
+                    
+                    films.docChanges.forEach( (change) => {
                         
-                        reject(error);
+                        if (change.type == "added")
+                            return ( addedFilms[change.doc.id] = { ...change.doc.data(), path: change.doc.ref.path } );
+                        else if (change.type == "modified")
+                            return ( changedFilms[change.doc.id] = { ...change.doc.data(), path: change.doc.ref.path } );
+                        else if (change.type == "removed")
+                            return ( removedFilms[change.doc.id] = { ...change.doc.data(), path: change.doc.ref.path } );
+                    } );
+                    
+                    if (!isEmpty(addedFilms))
+                        _dispatch = dispatch( addFilm(addedFilms) );
 
-                        return handleError(error);
-                    };
+                    if (!isEmpty(changedFilms))
+                        _dispatch = dispatch( changeFilm(changedFilms) );
 
-                	const dbRef = firebase.firestore().collection('films');
+                    if (!isEmpty(removedFilms))
+                        _dispatch = dispatch( removeFilm(removedFilms) );
 
-                	let _films = {};
-                    let addedFilms = {};
-                    let changedFilms = {};
-                    let removedFilms = {};
-                    let _dispatch = undefined;
+                    return _dispatch;
 
-                    dbRef.onSnapshot( (films) => {
-                    	
-                        addedFilms = {};
-                        changedFilms = {};
-                        removedFilms = {};
+                }, errorHandler);
+
+                if (!films.silent)
+                	return (
+                        isConnected().then( (isConnected) => {
                         
-                        films.docChanges.forEach( (change) => {
+                            if (!isEmpty(isConnected.errors)) return errorHandler(isConnected.errors[0]);
+                            else {
 
-                            if (change.type == "added")
-                                return (addedFilms[change.doc.id] = change.doc.data());
-                            else if (change.type == "modified")
-                                return (changedFilms[change.doc.id] = change.doc.data());
-                            else if (change.type == "removed")
-                                return (removedFilms[change.doc.id] = change.doc.data());
-                        } );
+                                isConnected.handleTimeout(errorHandler);
+                                
+                                return (
+	                            	dbRef.get().then( (films) => {
 
-                        if (!isEmpty(addedFilms))
-                            _dispatch = dispatch( addFilm(addedFilms) );
+                                        clearTimeout(isConnected.timeout);
 
-                        if (!isEmpty(changedFilms))
-                            _dispatch = dispatch( changeFilm(changedFilms) );
+                    					_films = {};
 
-                        if (!isEmpty(removedFilms))
-                            _dispatch = dispatch( removeFilm(removedFilms) );
+                    					films.forEach( (film) => ( _films[film.id] = { ...film.data(), path: film.ref.path } ) );
 
-                        return _dispatch;
+                                        resolve(_films);
 
-                    }, errorHandler);
+                                        return dispatch( setFilms(_films) );
 
-                    if (!films.silent)
-	                	return (
-	                        isConnected().then( (isConnected) => {
-                            
-                                if (!isEmpty(isConnected.errors)) return errorHandler(isConnected.errors[0]);
-                                else {
+                                    }, errorHandler)
+                                    .catch(_handleError)
+                                );
+                            }
+                        }, errorHandler)
+                        .catch(_handleError)
+                    );
 
-                                    isConnected.handleTimeout(errorHandler);
-                                    
-                                    return (
-    	                            	dbRef.get().then( (films) => {
-
-                                            clearTimeout(isConnected.timeout);
-
-                        					_films = {};
-
-                        					films.forEach( (film) => ( _films[film.id] = film.data() ) );
-
-                                            resolve(_films);
-
-                                            return dispatch( setFilms(_films) );
-
-                                        }, errorHandler)
-                                        .catch(_handleError)
-                                    );
-	                            }
-	                        }, errorHandler)
-	                        .catch(_handleError)
-	                    );
-
-                } catch (error) {
-                    return _handleError(error);
-                }
-            } )
-        );
-    } );
+            } catch (error) {
+                return _handleError(error);
+            }
+        } )
+    ) );
 }

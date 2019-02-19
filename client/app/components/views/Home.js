@@ -25,15 +25,13 @@ import StatusBar from '../../components/others/StatusBar';
 */
 import Styles from '../styles';
 
-const Stories = function (props) {
-
-	let item = {};
-
+const Home = function (props) {
+	
     return (
         <Container style={ [Styles.backgroundWrapper] }>
         	<Header hasSegment noShadow style={ [Styles.backgroundHeader] }>
         		<Body style={ [isAndroid() && Styles.marginLeft] }>
-        			<Title style={ [Styles.textLight] }>Stories</Title>
+        			<Title style={ [Styles.textLight] }>Home</Title>
         		</Body>
         		<Right>
         			<Button transparent onPress={ () => ( props.switchViews(this.coverFlowView, this.listView) ) }>
@@ -64,7 +62,7 @@ const Stories = function (props) {
             <Content
             	refreshControl={
 	                <RefreshControl
-	                  refreshing={ props.collectionsLoading || props.filmsLoading || props.musicLoading }
+	                  refreshing={ props.collectionsRefreshing || props.filmsRefreshing || props.musicRefreshing }
 	                  onRefresh={ props.refresh }
 	                />
 	            }
@@ -72,23 +70,29 @@ const Stories = function (props) {
             	showsVerticalScrollIndicator={ !props.coverFlowView && props.listView } 
             	style={ [Styles.backgroundKimyaKimyaLight] }
             >
-            	<TouchableWithoutFeedback onPress={ props.player }>
-	            	<View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.padding, Styles.backgroundUbandani] }>
-	            		<View style={ [Styles.flexJustifyCenter, Styles.flexAlignCenter] }>
-		            		<Button transparent>
-								<Icon name="close" ios="ios-close" android="md-close" style={ [Styles.textLight] } />
-			    			</Button>
-			    		</View>
-	        			<View style={ [Styles.flex, Styles.paddingLeft, Styles.paddingRight] }>
-	        				<Text numberOfLines={1} style={ [Styles.textLight, Styles.textAlignLeft] }>Continue Watching...</Text>
-	        				<Text numberOfLines={1} style={ [Styles.textLabel, Styles.textSmall, Styles.textAlignLeft] }>Sarabi...</Text>
-	        				<Text numberOfLines={1} style={ [Styles.textLight, Styles.textSmall, Styles.textAlignLeft] }>02:30 of 10:16</Text>
-	        			</View>
-	        			<View style={ [Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.halfPadding] }>
-	        				<Thumbnail square source={ require('../../assets/Play_Placeholder.png') } />
-	        			</View>
-	            	</View>
-	            </TouchableWithoutFeedback>
+            	{ !isEmpty(props.playing) && <View style={ [Styles.padding, Styles.backgroundUbandani] }>
+	            		<TouchableWithoutFeedback onPress={ () => props.player(props.playing) }>
+			            	<View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter] }>
+			            		<View style={ [Styles.flexJustifyCenter, Styles.flexAlignCenter] }>
+				            		<Button transparent onPress={ props.removePlaying }>
+										<Icon name="close" ios="ios-close" android="md-close" style={ [Styles.textLight] } />
+					    			</Button>
+					    		</View>
+			        			<View style={ [Styles.flex, Styles.paddingLeft, Styles.paddingRight] }>
+			        				<Text numberOfLines={1} style={ [Styles.textLight, Styles.textAlignLeft] }>Continue Watching...</Text>
+			        				<Text numberOfLines={1} style={ [Styles.textLabel, Styles.textSmall, Styles.textAlignLeft] }>{ props.playing.title }</Text>
+			        				<Text numberOfLines={1} style={ [Styles.textLight, Styles.textSmall, Styles.textAlignLeft] }>{ moment.duration(props.playing.seek, "seconds").format("mm:ss", { trim: false }) } of { moment.duration(props.playing.duration, "seconds").format("mm:ss", { trim: false }) }</Text>
+			        			</View>
+			        			<View style={ [Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.halfPadding] }>
+			        				<Thumbnail square large defaultSource={ props.defaultThumbnail } source={ (props.playing.thumbnail)? { uri: props.playing.thumbnail } : props.defaultThumbnail } style={ [{ width: 120 }] } />
+		            				<View style={ [Styles.positionAbsolute, Styles.verticalPositionTop, Styles.verticalPositionBottom, Styles.horizontalPositionLeft, Styles.horizontalPositionRight, Styles.flexColumn, Styles.flexJustifyCenter, Styles.flexAlignCenter, { width: 120 }] }>
+		            					<Thumbnail small source={ require('../../assets/Play_Icon.png') } />
+		            				</View>
+			        			</View>
+			            	</View>
+			            </TouchableWithoutFeedback>
+			        </View>
+	        	}
 
 	            <View style={ [Styles.flex] }>
 	            	<View style={ [Styles.flex] }>
@@ -99,48 +103,54 @@ const Stories = function (props) {
 			            					{
 			            						Object.keys(props.collections[props.segment]).map( (key) => {
 
-			            							item = props.collections[props.segment][key];
+			            							let item = props.collections[props.segment][key];
 
 			            							return (
-				            							<TouchableWithoutFeedback key={ item.id } onPress={ () => props.story(item) }>
-								            				<View style={ [Styles.backgroundWhite, Styles.border, Styles.borderRadius, Styles.overflowHidden, Styles.marginLeft, Styles.marginRight, { width: 200 }] }>
-						            							<Image source={ (item.thumbnail)? { uri: item.thumbnail } : props.defaultThumbnail } style={ [Styles.width100, Styles.flex, Styles.positionAbsolute, Styles.verticalPositionTop, Styles.horizontalPositionLeft, Styles.horizontalPositionRight, Styles.borderTopLeftRadius, Styles.borderTopRightRadius, { height: 120 }] } />
-								            					<View style={ [Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.borderTop, Styles.borderLeft, Styles.borderRight, Styles.borderTopLeftRadius, Styles.borderTopRightRadius, { height: 120 }] }>
-								            						<Thumbnail small source={ require('../../assets/Play_Icon.png') } />
-								            						<View style={ [Styles.positionAbsolute, Styles.verticalPositionBottom, Styles.horizontalPositionRight, Styles.backgroundDark, Styles.halfMargin, { padding: 2, paddingRight: 3 }] }>
-										            					<Text style={ [Styles.textLight, Styles.textXXSmall] }>
-										            						{ moment.duration(616, "seconds").format("mm:ss") }
-										            					</Text>
-										            				</View>
-								            					</View>
-								            					<View style={ [Styles.padding, Styles.doublePaddingBottom] }>
-								            						<Text style={ [Styles.fextDark] }>{ item.title }</Text>
-								            						<Text numberOfLines={1} style={ [Styles.textLabel, Styles.textSmall, Styles.halfMarginBottom] }>{ item.description }</Text>
-										            				<View style={ [Styles.flex, Styles.flexRow, Styles.flexJustifyStart, Styles.flexAlignCenter, Styles.halfPaddingLeft] }>
-										            					{ !!item.videos && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
-											            						<Icon name="videocam" ios="ios-videocam" android="md-videocam" style={ [Styles.textSmall, Styles.textUbandani] } />
-											            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.videos) }</Text>
-											            					</View>
-											            				}
-										            					{ !!item.views && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
-											            						<Icon name="eye" ios="ios-eye" android="md-eye" style={ [Styles.textSmall, Styles.textUbandani] } />
-											            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.views) }</Text>
-											            					</View>
-											            				}
-										            					{ !!item.shares && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
-											            						<Icon name="share" ios="ios-share" android="md-share" style={ [Styles.textSmall, Styles.textUbandani] } />
-											            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.shares) }</Text>
-											            					</View>
-											            				}
-										            					{ !!item.likes && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
-											            						<Icon name="heart" ios="ios-heart" android="md-heart" style={ [Styles.textSmall, Styles.textUbandani] } />
-											            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.likes) }</Text>
-											            					</View>
-											            				}
-										            				</View>
-								            					</View>
-								            				</View>
-							            				</TouchableWithoutFeedback>
+			            								<View key={ item.id } style={ [Styles.backgroundWhite, Styles.border, Styles.borderRadius, Styles.overflowHidden, Styles.marginLeft, Styles.marginRight, { width: 200 }] }>
+					            							<TouchableWithoutFeedback onPress={ () => props.collection(item) }>
+									            				<View style={ [Styles.flex] }>
+							            							<Image defaultSource={ props.defaultThumbnail } source={ (item.thumbnail)? { uri: item.thumbnail } : props.defaultThumbnail } style={ [Styles.width100, Styles.flex, Styles.positionAbsolute, Styles.verticalPositionTop, Styles.horizontalPositionLeft, Styles.horizontalPositionRight, Styles.borderTopLeftRadius, Styles.borderTopRightRadius, { height: 120 }] } />
+									            					<View style={ [Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.borderTop, Styles.borderLeft, Styles.borderRight, Styles.borderTopLeftRadius, Styles.borderTopRightRadius, { height: 120 }] }>
+									            						<Thumbnail small source={ require('../../assets/Play_Icon.png') } />
+									            						<View style={ [Styles.positionAbsolute, Styles.verticalPositionBottom, Styles.horizontalPositionRight, Styles.backgroundDark, Styles.halfMargin, { padding: 2, paddingRight: 3 }] }>
+											            					<Text style={ [Styles.textLight, Styles.textXXSmall] }>
+											            						{ moment.duration(616, "seconds").format("mm:ss") }
+											            					</Text>
+											            				</View>
+									            					</View>
+									            					<View style={ [Styles.padding, Styles.doublePaddingBottom] }>
+									            						<Text style={ [Styles.fextDark] }>
+									            							{ item.title }
+									            						</Text>
+									            						<Text numberOfLines={2} style={ [Styles.textLabel, Styles.textSmall, Styles.halfMarginBottom] }>
+									            							{ item.tagline }
+									            						</Text>
+											            				<View style={ [Styles.flex, Styles.flexRow, Styles.flexJustifyStart, Styles.flexAlignCenter, Styles.halfPaddingLeft] }>
+											            					{ !!item._videos && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
+												            						<Icon name="videocam" ios="ios-videocam" android="md-videocam" style={ [Styles.textSmall, Styles.textUbandani] } />
+												            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item._videos) }</Text>
+												            					</View>
+												            				}
+											            					{ !!item.views && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
+												            						<Icon name="eye" ios="ios-eye" android="md-eye" style={ [Styles.textSmall, Styles.textUbandani] } />
+												            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.views) }</Text>
+												            					</View>
+												            				}
+											            					{ !!item.shares && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
+												            						<Icon name="share" ios="ios-share" android="md-share" style={ [Styles.textSmall, Styles.textUbandani] } />
+												            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.shares) }</Text>
+												            					</View>
+												            				}
+											            					{ !!item.likes && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
+												            						<Icon name="heart" ios="ios-heart" android="md-heart" style={ [Styles.textSmall, Styles.textUbandani] } />
+												            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.likes) }</Text>
+												            					</View>
+												            				}
+											            				</View>
+									            					</View>
+									            				</View>
+								            				</TouchableWithoutFeedback>
+								            			</View>
 							            			);
 			            						} )
 			            					}
@@ -151,9 +161,9 @@ const Stories = function (props) {
 			            					dataArray={ props.collections[props.segment] }
                       						keyboardShouldPersistTaps="always"
                       						renderRow={ (item) =>
-                      							<ListItem thumbnail square key={ item.id } onPress={ () => props.story(item) }>
+                      							<ListItem thumbnail square key={ item.id } onPress={ () => props.collection(item) } style={ [Styles.marginBottom] }>
 							            			<Left>
-							            				<Thumbnail square large source={ (item.thumbnail)? { uri: item.thumbnail } : props.defaultThumbnail } style={ [{ width: 120 }] } />
+							            				<Thumbnail square large defaultSource={ props.defaultThumbnail } source={ (item.thumbnail)? { uri: item.thumbnail } : props.defaultThumbnail } style={ [{ width: 120 }] } />
 							            				<View style={ [Styles.positionAbsolute, Styles.verticalPositionTop, Styles.verticalPositionBottom, Styles.horizontalPositionLeft, Styles.horizontalPositionRight, Styles.flexColumn, Styles.flexJustifyCenter, Styles.flexAlignCenter, { width: 120 }] }>
 							            					<Thumbnail small source={ require('../../assets/Play_Icon.png') } />
 							            				</View>
@@ -162,13 +172,13 @@ const Stories = function (props) {
 							            				<Text style={ [Styles.fextDark] }>
 							            					{ item.title }
 							            				</Text>
-							            				<Text numberOfLines={1} style={ [Styles.textLabel, Styles.textSmall, Styles.halfMarginBottom] }>
-							            					{ item.description }
+							            				<Text numberOfLines={2} style={ [Styles.textLabel, Styles.textSmall, Styles.halfMarginBottom] }>
+							            					{ item.tagline }
 							            				</Text>
 							            				<View style={ [Styles.flex, Styles.flexRow, Styles.flexJustifyStart, Styles.flexAlignCenter, Styles.halfPaddingLeft] }>
-							            					{ !!item.videos && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.halfMarginRight] }>
+							            					{ !!item._videos && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.halfMarginRight] }>
 								            						<Icon name="videocam" ios="ios-videocam" android="md-videocam" style={ [Styles.textSmall, Styles.textUbandani] } />
-								            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.videos) }</Text>
+								            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item._videos) }</Text>
 								            					</View>
 								            				}
 							            					{ !!item.views && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.halfMarginRight] }>
@@ -216,43 +226,49 @@ const Stories = function (props) {
 			            					{
 			            						Object.keys(props.films[props.segment]).map( (key) => {
 
-			            							item = props.films[props.segment][key];
+			            							let item = props.films[props.segment][key];
 
 			            							return (
-				            							<TouchableWithoutFeedback key={ item.id } onPress={ () => props.player(item) }>
-								            				<View style={ [Styles.backgroundWhite, Styles.border, Styles.borderRadius, Styles.overflowHidden, Styles.marginLeft, Styles.marginRight, { width: 200 }] }>
-						            							<Image source={ (item.thumbnail)? { uri: item.thumbnail } : props.defaultThumbnail } style={ [Styles.width100, Styles.flex, Styles.positionAbsolute, Styles.verticalPositionTop, Styles.horizontalPositionLeft, Styles.horizontalPositionRight, Styles.borderTopLeftRadius, Styles.borderTopRightRadius, { height: 120 }] } />
-								            					<View style={ [Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.borderTop, Styles.borderLeft, Styles.borderRight, Styles.borderTopLeftRadius, Styles.borderTopRightRadius, { height: 120 }] }>
-								            						<Thumbnail small source={ require('../../assets/Play_Icon.png') } />
-								            						<View style={ [Styles.positionAbsolute, Styles.verticalPositionBottom, Styles.horizontalPositionRight, Styles.backgroundDark, Styles.halfMargin, { padding: 2, paddingRight: 3 }] }>
-										            					<Text style={ [Styles.textLight, Styles.textXXSmall] }>
-										            						{ moment.duration(item.duration, "seconds").format("mm:ss") }
-										            					</Text>
-										            				</View>
-								            					</View>
-								            					<View style={ [Styles.padding, Styles.doublePaddingBottom] }>
-								            						<Text style={ [Styles.fextDark] }>{ item.title }</Text>
-								            						<Text numberOfLines={1} style={ [Styles.textLabel, Styles.textSmall, Styles.halfMarginBottom] }>{ item.description }</Text>
-										            				<View style={ [Styles.flex, Styles.flexRow, Styles.flexJustifyStart, Styles.flexAlignCenter, Styles.halfPaddingLeft] }>
-										            					{ !!item.views && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
-											            						<Icon name="eye" ios="ios-eye" android="md-eye" style={ [Styles.textSmall, Styles.textUbandani] } />
-											            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.views) }</Text>
-											            					</View>
-											            				}
-										            					{ !isEmpty(item.shares) && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
-											            						<Icon name="share" ios="ios-share" android="md-share" style={ [Styles.textSmall, Styles.textUbandani] } />
-											            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.shares.length) }</Text>
-											            					</View>
-											            				}
-										            					{ !isEmpty(item.likes) && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
-											            						<Icon name="heart" ios="ios-heart" android="md-heart" style={ [Styles.textSmall, Styles.textUbandani] } />
-											            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.likes.length) }</Text>
-											            					</View>
-											            				}
-										            				</View>
-								            					</View>
-								            				</View>
-							            				</TouchableWithoutFeedback>
+			            								<View key={ item.id } style={ [Styles.backgroundWhite, Styles.border, Styles.borderRadius, Styles.overflowHidden, Styles.marginLeft, Styles.marginRight, { width: 200 }] }>
+					            							<TouchableWithoutFeedback onPress={ () => props.player(item, props.films[props.segment]) }>
+									            				<View style={ [Styles.flex] }>
+							            							<Image defaultSource={ props.defaultThumbnail } source={ (item.thumbnail)? { uri: item.thumbnail } : props.defaultThumbnail } style={ [Styles.width100, Styles.flex, Styles.positionAbsolute, Styles.verticalPositionTop, Styles.horizontalPositionLeft, Styles.horizontalPositionRight, Styles.borderTopLeftRadius, Styles.borderTopRightRadius, { height: 120 }] } />
+									            					<View style={ [Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.borderTop, Styles.borderLeft, Styles.borderRight, Styles.borderTopLeftRadius, Styles.borderTopRightRadius, { height: 120 }] }>
+									            						<Thumbnail small source={ require('../../assets/Play_Icon.png') } />
+									            						<View style={ [Styles.positionAbsolute, Styles.verticalPositionBottom, Styles.horizontalPositionRight, Styles.backgroundDark, Styles.halfMargin, { padding: 2, paddingRight: 3 }] }>
+											            					<Text style={ [Styles.textLight, Styles.textXXSmall] }>
+											            						{ moment.duration(item.duration, "seconds").format("mm:ss", { trim: false }) }
+											            					</Text>
+											            				</View>
+									            					</View>
+									            					<View style={ [Styles.padding, Styles.doublePaddingBottom] }>
+									            						<Text style={ [Styles.fextDark] }>
+									            							{ item.title }
+									            						</Text>
+									            						<Text numberOfLines={2} style={ [Styles.textLabel, Styles.textSmall, Styles.halfMarginBottom] }>
+									            							{ item.tagline }
+									            						</Text>
+											            				<View style={ [Styles.flex, Styles.flexRow, Styles.flexJustifyStart, Styles.flexAlignCenter, Styles.halfPaddingLeft] }>
+											            					{ !!item.views && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
+												            						<Icon name="eye" ios="ios-eye" android="md-eye" style={ [Styles.textSmall, Styles.textUbandani] } />
+												            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.views) }</Text>
+												            					</View>
+												            				}
+											            					{ !isEmpty(item.shares) && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
+												            						<Icon name="share" ios="ios-share" android="md-share" style={ [Styles.textSmall, Styles.textUbandani] } />
+												            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.shares.length) }</Text>
+												            					</View>
+												            				}
+											            					{ !isEmpty(item.likes) && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
+												            						<Icon name="heart" ios="ios-heart" android="md-heart" style={ [Styles.textSmall, Styles.textUbandani] } />
+												            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.likes.length) }</Text>
+												            					</View>
+												            				}
+											            				</View>
+									            					</View>
+									            				</View>
+								            				</TouchableWithoutFeedback>
+								            			</View>
 							            			);
 			            						} )
 			            					}
@@ -263,15 +279,15 @@ const Stories = function (props) {
 			            					dataArray={ props.films[props.segment] }
                       						keyboardShouldPersistTaps="always"
                       						renderRow={ (item) =>
-                      							<ListItem thumbnail square key={ item.id } onPress={ () => props.player(item) }>
+                      							<ListItem thumbnail square key={ item.id } onPress={ () => props.player(item, props.films[props.segment]) } style={ [Styles.marginBottom] }>
 							            			<Left>
-							            				<Thumbnail square large source={ (item.thumbnail)? { uri: item.thumbnail } : props.defaultThumbnail } style={ [{ width: 120 }] } />
+							            				<Thumbnail square large defaultSource={ props.defaultThumbnail } source={ (item.thumbnail)? { uri: item.thumbnail } : props.defaultThumbnail } style={ [{ width: 120 }] } />
 							            				<View style={ [Styles.positionAbsolute, Styles.verticalPositionTop, Styles.verticalPositionBottom, Styles.horizontalPositionLeft, Styles.horizontalPositionRight, Styles.flexColumn, Styles.flexJustifyCenter, Styles.flexAlignCenter, { width: 120 }] }>
 							            					<Thumbnail small source={ require('../../assets/Play_Icon.png') } />
 							            				</View>
 							            				<View style={ [Styles.positionAbsolute, Styles.verticalPositionBottom, Styles.horizontalPositionRight, Styles.backgroundDark, Styles.halfMargin, { padding: 2, paddingRight: 3 }] }>
 							            					<Text style={ [Styles.textLight, Styles.textXXSmall] }>
-							            						{ moment.duration(item.duration, "seconds").format("mm:ss") }
+							            						{ moment.duration(item.duration, "seconds").format("mm:ss", { trim: false }) }
 							            					</Text>
 							            				</View>
 							            			</Left>
@@ -279,8 +295,8 @@ const Stories = function (props) {
 							            				<Text style={ [Styles.fextDark] }>
 							            					{ item.title }
 							            				</Text>
-							            				<Text numberOfLines={1} style={ [Styles.textLabel, Styles.textSmall, Styles.halfMarginBottom] }>
-							            					{ item.description }
+							            				<Text numberOfLines={2} style={ [Styles.textLabel, Styles.textSmall, Styles.halfMarginBottom] }>
+							            					{ item.tagline }
 							            				</Text>
 							            				<View style={ [Styles.flex, Styles.flexRow, Styles.flexJustifyStart, Styles.flexAlignCenter, Styles.halfPaddingLeft] }>
 							            					{ !!item.views && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.halfMarginRight] }>
@@ -328,43 +344,49 @@ const Stories = function (props) {
 			            					{
 			            						Object.keys(props.music[props.segment]).map( (key) => {
 
-			            							item = props.music[props.segment][key];
+			            							let item = props.music[props.segment][key];
 
 			            							return (
-				            							<TouchableWithoutFeedback key={ item.id } onPress={ () => props.player(item) }>
-								            				<View style={ [Styles.backgroundWhite, Styles.border, Styles.borderRadius, Styles.overflowHidden, Styles.marginLeft, Styles.marginRight, { width: 200 }] }>
-						            							<Image source={ (item.thumbnail)? { uri: item.thumbnail } : props.defaultThumbnail } style={ [Styles.width100, Styles.flex, Styles.positionAbsolute, Styles.verticalPositionTop, Styles.horizontalPositionLeft, Styles.horizontalPositionRight, Styles.borderTopLeftRadius, Styles.borderTopRightRadius, { height: 120 }] } />
-								            					<View style={ [Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.borderTop, Styles.borderLeft, Styles.borderRight, Styles.borderTopLeftRadius, Styles.borderTopRightRadius, { height: 120 }] }>
-								            						<Thumbnail small source={ require('../../assets/Play_Icon.png') } />
-								            						<View style={ [Styles.positionAbsolute, Styles.verticalPositionBottom, Styles.horizontalPositionRight, Styles.backgroundDark, Styles.halfMargin, { padding: 2, paddingRight: 3 }] }>
-										            					<Text style={ [Styles.textLight, Styles.textXXSmall] }>
-										            						{ moment.duration(item.duration, "seconds").format("mm:ss") }
-										            					</Text>
-										            				</View>
-								            					</View>
-								            					<View style={ [Styles.padding, Styles.doublePaddingBottom] }>
-								            						<Text style={ [Styles.fextDark] }>{ item.title }</Text>
-								            						<Text numberOfLines={1} style={ [Styles.textLabel, Styles.textSmall, Styles.halfMarginBottom] }>{ item.description }</Text>
-										            				<View style={ [Styles.flex, Styles.flexRow, Styles.flexJustifyStart, Styles.flexAlignCenter, Styles.halfPaddingLeft] }>
-										            					{ !!item.views && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
-											            						<Icon name="eye" ios="ios-eye" android="md-eye" style={ [Styles.textSmall, Styles.textUbandani] } />
-											            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.views) }</Text>
-											            					</View>
-											            				}
-										            					{ !isEmpty(item.shares) && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
-											            						<Icon name="share" ios="ios-share" android="md-share" style={ [Styles.textSmall, Styles.textUbandani] } />
-											            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.shares.length) }</Text>
-											            					</View>
-											            				}
-										            					{ !isEmpty(item.likes) && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
-											            						<Icon name="heart" ios="ios-heart" android="md-heart" style={ [Styles.textSmall, Styles.textUbandani] } />
-											            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.likes.length) }</Text>
-											            					</View>
-											            				}
-										            				</View>
-								            					</View>
-								            				</View>
-							            				</TouchableWithoutFeedback>
+			            								<View key={ item.id } style={ [Styles.backgroundWhite, Styles.border, Styles.borderRadius, Styles.overflowHidden, Styles.marginLeft, Styles.marginRight, { width: 200 }] }>
+					            							<TouchableWithoutFeedback onPress={ () => props.player(item, props.music[props.segment]) }>
+									            				<View style={ [Styles.flex] }>
+							            							<Image defaultSource={ props.defaultThumbnail } source={ (item.thumbnail)? { uri: item.thumbnail } : props.defaultThumbnail } style={ [Styles.width100, Styles.flex, Styles.positionAbsolute, Styles.verticalPositionTop, Styles.horizontalPositionLeft, Styles.horizontalPositionRight, Styles.borderTopLeftRadius, Styles.borderTopRightRadius, { height: 120 }] } />
+									            					<View style={ [Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.borderTop, Styles.borderLeft, Styles.borderRight, Styles.borderTopLeftRadius, Styles.borderTopRightRadius, { height: 120 }] }>
+									            						<Thumbnail small source={ require('../../assets/Play_Icon.png') } />
+									            						<View style={ [Styles.positionAbsolute, Styles.verticalPositionBottom, Styles.horizontalPositionRight, Styles.backgroundDark, Styles.halfMargin, { padding: 2, paddingRight: 3 }] }>
+											            					<Text style={ [Styles.textLight, Styles.textXXSmall] }>
+											            						{ moment.duration(item.duration, "seconds").format("mm:ss", { trim: false }) }
+											            					</Text>
+											            				</View>
+									            					</View>
+									            					<View style={ [Styles.padding, Styles.doublePaddingBottom] }>
+									            						<Text style={ [Styles.fextDark] }>
+									            							{ item.title }
+									            						</Text>
+									            						<Text numberOfLines={2} style={ [Styles.textLabel, Styles.textSmall, Styles.halfMarginBottom] }>
+									            							{ item.tagline }
+									            						</Text>
+											            				<View style={ [Styles.flex, Styles.flexRow, Styles.flexJustifyStart, Styles.flexAlignCenter, Styles.halfPaddingLeft] }>
+											            					{ !!item.views && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
+												            						<Icon name="eye" ios="ios-eye" android="md-eye" style={ [Styles.textSmall, Styles.textUbandani] } />
+												            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.views) }</Text>
+												            					</View>
+												            				}
+											            					{ !isEmpty(item.shares) && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
+												            						<Icon name="share" ios="ios-share" android="md-share" style={ [Styles.textSmall, Styles.textUbandani] } />
+												            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.shares.length) }</Text>
+												            					</View>
+												            				}
+											            					{ !isEmpty(item.likes) && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginRight] }>
+												            						<Icon name="heart" ios="ios-heart" android="md-heart" style={ [Styles.textSmall, Styles.textUbandani] } />
+												            						<Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.likes.length) }</Text>
+												            					</View>
+												            				}
+											            				</View>
+									            					</View>
+									            				</View>
+								            				</TouchableWithoutFeedback>
+								            			</View>
 							            			);
 			            						} )
 			            					}
@@ -375,15 +397,15 @@ const Stories = function (props) {
 			            					dataArray={ props.music[props.segment] }
                       						keyboardShouldPersistTaps="always"
                       						renderRow={ (item) =>
-                      							<ListItem thumbnail square key={ item.id } onPress={ () => props.player(item) }>
+                      							<ListItem thumbnail square key={ item.id } onPress={ () => props.player(item, props.music[props.segment]) } style={ [Styles.marginBottom] }>
 							            			<Left>
-							            				<Thumbnail square large source={ (item.thumbnail)? { uri: item.thumbnail } : props.defaultThumbnail } style={ [{ width: 120 }] } />
+							            				<Thumbnail square large defaultSource={ props.defaultThumbnail } source={ (item.thumbnail)? { uri: item.thumbnail } : props.defaultThumbnail } style={ [{ width: 120 }] } />
 							            				<View style={ [Styles.positionAbsolute, Styles.verticalPositionTop, Styles.verticalPositionBottom, Styles.horizontalPositionLeft, Styles.horizontalPositionRight, Styles.flexColumn, Styles.flexJustifyCenter, Styles.flexAlignCenter, { width: 120 }] }>
 							            					<Thumbnail small source={ require('../../assets/Play_Icon.png') } />
 							            				</View>
 							            				<View style={ [Styles.positionAbsolute, Styles.verticalPositionBottom, Styles.horizontalPositionRight, Styles.backgroundDark, Styles.halfMargin, { padding: 2, paddingRight: 3 }] }>
 							            					<Text style={ [Styles.textLight, Styles.textXXSmall] }>
-							            						{ moment.duration(item.duration, "seconds").format("mm:ss") }
+							            						{ moment.duration(item.duration, "seconds").format("mm:ss", { trim: false }) }
 							            					</Text>
 							            				</View>
 							            			</Left>
@@ -391,8 +413,8 @@ const Stories = function (props) {
 							            				<Text style={ [Styles.fextDark] }>
 							            					{ item.title }
 							            				</Text>
-							            				<Text numberOfLines={1} style={ [Styles.textLabel, Styles.textSmall, Styles.halfMarginBottom] }>
-							            					{ item.description }
+							            				<Text numberOfLines={2} style={ [Styles.textLabel, Styles.textSmall, Styles.halfMarginBottom] }>
+							            					{ item.tagline }
 							            				</Text>
 							            				<View style={ [Styles.flex, Styles.flexRow, Styles.flexJustifyStart, Styles.flexAlignCenter, Styles.halfPaddingLeft] }>
 							            					{ !!item.views && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.halfMarginRight] }>
@@ -441,4 +463,4 @@ const Stories = function (props) {
 */
 const styles = StyleSheet.create({});
 
-export default Stories;
+export default Home;

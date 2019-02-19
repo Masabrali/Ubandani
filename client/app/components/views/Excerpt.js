@@ -9,6 +9,7 @@ import { Container, Header, Left, Body, Right, Content, Text, List, ListItem, Th
  * Import Utilities
 */
 import titleCase from '../../utilities/titleCase';
+import isEmpty from '../../utilities/isEmpty';
 import isAndroid from '../../utilities/isAndroid';
 import isIOS from '../../utilities/isIOS';
 
@@ -25,11 +26,11 @@ import Styles from '../styles';
 const Excerpt = function (props) {
 	return (
         <Container style={ [Styles.wrapper] }>
-            <Header noShadow style={ [Styles.backgroundUbandaniLight] }>
+            <Header noShadow style={ [Styles.backgroundUbandaniLight, (props.reference == "collection") && Styles.marginTopStatusBar] }>
                 <Left>
                     <Button iconLeft transparent onPress={ props.back }>
                         <Icon name="arrow-back" ios="ios-arrow-back" android="md-arrow-back" style={ [Styles.textUbandaniDark] } />
-                        { isIOS() && <Text styles={ [Styles.textUbandaniDark] }>Back</Text> }
+                        { isIOS() && <Text style={ [Styles.textUbandaniDark] }>Back</Text> }
                     </Button>
                 </Left>
                 <Right>
@@ -44,19 +45,27 @@ const Excerpt = function (props) {
 
             <StatusBar backgroundColor={ Styles.backgroundUbandaniLight.backgroundColor } barStyle="dark-content" />
             
-            <View style={ [Styles.flexRow, Styles.flexJustityStart, Styles.flexAlignCenter, Styles.borderBottom, Styles.paddingBottom, Styles.backgroundUbandaniLight] }>
+            <View style={ [Styles.flexRow, Styles.flexJustityCenter, Styles.flexAlignCenter, Styles.borderBottom, Styles.padding, Styles.doublePaddingBottom, Styles.backgroundUbandaniLight] }>
                 <View style={ [Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.paddingLeft, Styles.paddingRight] }>
-                    <Thumbnail square defaultSource={ require('../../assets/Play_Placeholder.png') } source={ require('../../assets/Play_Placeholder.png') } />
+                    <Thumbnail square large defaultSource={ props.defaultThumbnail } source={ (props.item.thumbnail)? { uri: props.item.thumbnail } : props.defaultThumbnail } style={ [{ width: 120 }] } />
                 </View>
-                <View styles={ [Styles.flex, Styles.flexJustifyStart, Styles.flexAlignCenter, Styles.paddingLeft, Styles.paddingRight] }>
-                    <Text style={ [Styles.textXXLarge] }>Sarabi</Text>
-                    <Text style={ [Styles.textLabel, Styles.textSmall] }>Anyone can make it...</Text>
+                <View style={ [Styles.flex, Styles.paddingLeft, Styles.paddingRight] }>
+                    <Text style={ [Styles.textXXLarge] }>{ props.item.title }</Text>
+                    <Text numberOfLines={2} style={ [Styles.textLabel, Styles.textSmall] }>{ props.item.description }</Text>
                 </View>
             </View>
             <Content padder style={ [Styles.backgroundKimyaKimyaLight, Styles.flex] } contentContainerStyle={ [Styles.doublePadding] }>
-                <Text style={ [Styles.textLabel, Styles.textMedium, { lineHeight: 28 }] }>
-                  Occaecati sapiente modi molestias qui. Dolor facilis similique facilis. Voluptatem possimus eligendi assumenda magni et qui cumque voluptates. Rerum excepturi amet laboriosam dolorem voluptatum. Repellendus nobis voluptatem ratione voluptatem dolor ipsam dolor. Occaecati sapiente modi molestias qui. Dolor facilis similique facilis. Voluptatem possimus eligendi assumenda magni et qui cumque voluptates. Rerum excepturi amet laboriosam dolorem voluptatum. Repellendus nobis voluptatem ratione voluptatem dolor ipsam dolor
-                </Text>
+                { !!props.item.starring && <View style={ [Styles.flexRow, Styles.flexJustifyStart, Styles.flexAlignCenter] }>
+                        <Text style={ [Styles.textLabel] }>Starring:</Text>
+                        <Text style={ [Styles.halfMarginLeft] }>{ props.item.starring }</Text>
+                    </View>
+                }
+                { !isEmpty(props.item.cast) && <View style={ [Styles.flexRow, Styles.flexJustifyStart, Styles.flexAlignCenter] }>
+                        <Text style={ [Styles.textLabel] }>Cast:</Text>
+                        <Text style={ [Styles.halfMarginLeft] }>{ props.item.cast.join(', ') }</Text>
+                   </View>
+                }
+                <Text style={ [Styles.halfMarginTop, Styles.textLabel, Styles.textMedium, { lineHeight: 28 }] }>{ props.item.excerpt }</Text>
             </Content>
         </Container>
     );

@@ -14,8 +14,9 @@ import isAndroid from './utilities/isAndroid';
 /**
  * Import Containers
 */
-import Stories from './containers/views/Stories';
-import Story from  './containers/views/Story';
+import Home from './containers/views/Home';
+
+import Collection from  './containers/views/Collection';
 
 import Profile from  './containers/views/Profile';
 import EditProfile from  './containers/views/EditProfile';
@@ -58,8 +59,9 @@ const Routes = function () {
         <Router>
             <Modal>
                 <Scene key="root" hideNavBar={ true }>
-                    <Scene key="stories" component={ Stories } title="Stories" hideNavBar={ true } />
-                    <Scene key="story" component={ Story } title="Story" hideNavBar={ true } />
+                    <Scene key="home" component={ Home } title="Home" hideNavBar={ true } />
+                    
+                    <Scene key="collection" component={ Collection } title="Collection" hideNavBar={ true } />
 
                     <Scene key="profile" component={ Profile } title="Profile" hideNavBar={ true } />
                     <Scene key="editProfile" component={ EditProfile } title="Edit Profile" titleStyle={ titleStyle } backButtonTintColor={ Styles.textUbandaniLight.color } backTitle="Profile" backTitleStyle={ backTitleStyle } hideNavBar={ false } navigationBarStyle={ navigationBarStyle } />

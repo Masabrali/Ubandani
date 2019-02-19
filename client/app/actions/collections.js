@@ -24,93 +24,91 @@ export default function (collections) {
 
 	// return fetch('countries.php', {}, setCountries);
 
-    return ( (dispatch) => {
+    return ( (dispatch) => (
 
-        return (
-            new Promise( (resolve, reject) => {
+        new Promise( (resolve, reject) => {
 
-                try {
+            try {
 
-                	const errorHandler= (error) => ( resolve({ errors: [error] }) );
+            	const errorHandler= (error) => ( resolve({ errors: [error] }) );
 
-                    const _handleError = (error) => {
+                const _handleError = (error) => {
+                    
+                    reject(error);
+
+                    return handleError(error);
+                };
+
+            	const dbRef = firebase.firestore().collection('collections');
+
+            	let _collections = {};
+                let addedCollections = {};
+                let changedCollections = {};
+                let removedCollections = {};
+                let _dispatch = undefined;
+
+                dbRef.onSnapshot( (collections) => {
+                	
+                    addedCollections = {};
+                    changedCollections = {};
+                    removedCollections = {};
+                    
+                    collections.docChanges.forEach( (change) => {
+
+                        if (change.type == "added")
+                            return ( addedCollections[change.doc.id] = { ...change.doc.data(), path: change.doc.ref.path } );
+                        else if (change.type == "modified")
+                            return ( changedCollections[change.doc.id] = { ...change.doc.data(), path: change.doc.ref.path } );
+                        else if (change.type == "removed")
+                            return ( removedCollections[change.doc.id] = { ...change.doc.data(), path: change.doc.ref.path } );
+                    } );
+
+                    if (!isEmpty(addedCollections))
+                        _dispatch = dispatch( addCollection(addedCollections) );
+
+                    if (!isEmpty(changedCollections))
+                        _dispatch = dispatch( changeCollection(changedCollections) );
+
+                    if (!isEmpty(removedCollections))
+                        _dispatch = dispatch( removeCollection(removedCollections) );
+
+                    return _dispatch;
+
+                }, errorHandler);
+
+                if (!collections.silent)
+                	return (
+                        isConnected().then( (isConnected) => {
                         
-                        reject(error);
+                            if (!isEmpty(isConnected.errors)) return errorHandler(isConnected.errors[0]);
+                            else {
 
-                        return handleError(error);
-                    };
+                                isConnected.handleTimeout(errorHandler);
+                                
+                                return (
+	                            	dbRef.get().then( (collections) => {
 
-                	const dbRef = firebase.firestore().collection('collections');
+                                        clearTimeout(isConnected.timeout);
 
-                	let _collections = {};
-                    let addedCollections = {};
-                    let changedCollections = {};
-                    let removedCollections = {};
-                    let _dispatch = undefined;
+                    					_collections = {};
 
-                    dbRef.onSnapshot( (collections) => {
-                    	
-                        addedCollections = {};
-                        changedCollections = {};
-                        removedCollections = {};
-                        
-                        collections.docChanges.forEach( (change) => {
+                    					collections.forEach( (collection) => ( _collections[collection.id] = { ...collection.data(), path: collection.ref.path } ) );
 
-                            if (change.type == "added")
-                                return (addedCollections[change.doc.id] = change.doc.data());
-                            else if (change.type == "modified")
-                                return (changedCollections[change.doc.id] = change.doc.data());
-                            else if (change.type == "removed")
-                                return (removedCollections[change.doc.id] = change.doc.data());
-                        } );
+                                        resolve(_collections);
 
-                        if (!isEmpty(addedCollections))
-                            _dispatch = dispatch( addCollection(addedCollections) );
+                                        return dispatch( setCollections(_collections) );
 
-                        if (!isEmpty(changedCollections))
-                            _dispatch = dispatch( changeCollection(changedCollections) );
+                                    }, errorHandler)
+                                    .catch(_handleError)
+                                );
+                            }
+                        }, errorHandler)
+                        .catch(_handleError)
+                    );
 
-                        if (!isEmpty(removedCollections))
-                            _dispatch = dispatch( removeCollection(removedCollections) );
-
-                        return _dispatch;
-
-                    }, errorHandler);
-
-                    if (!collections.silent)
-	                	return (
-	                        isConnected().then( (isConnected) => {
-                            
-                                if (!isEmpty(isConnected.errors)) return errorHandler(isConnected.errors[0]);
-                                else {
-
-                                    isConnected.handleTimeout(errorHandler);
-                                    
-                                    return (
-    	                            	dbRef.get().then( (collections) => {
-
-                                            clearTimeout(isConnected.timeout);
-
-                        					_collections = {};
-
-                        					collections.forEach( (collection) => ( _collections[collection.id] = collection.data() ) );
-
-                                            resolve(_collections);
-
-                                            return dispatch( setCollections(_collections) );
-
-                                        }, errorHandler)
-                                        .catch(_handleError)
-                                    );
-	                            }
-	                        }, errorHandler)
-	                        .catch(_handleError)
-	                    );
-
-                } catch (error) {
-                    return _handleError(error);
-                }
-            } )
-        );
-    } );
+            } catch (error) {
+                return _handleError(error);
+            }
+        } )
+    ) );
 }

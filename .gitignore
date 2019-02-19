@@ -2,3 +2,4 @@
 /client/android/app/gradle.properties
 /client/android/app/src/main/AndroidManifest.xml
 /client/android/app/ubandani-release-key.keystore
+/client/android/app/build/outputs/mytrace.txt

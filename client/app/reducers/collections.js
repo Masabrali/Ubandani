@@ -9,7 +9,7 @@ import isArray from './../utilities/isArray';
 * Define the reducer
 */
 export default function (state = {}, action = {}) {
-
+    
     switch(action.type) {
 
         case 'COLLECTIONS_FETCHED':
@@ -40,6 +40,70 @@ export default function (state = {}, action = {}) {
                 Object.keys(action.collection).map( (key) => (
                 	(isArray(state))? state.splice(key, 1) : delete state[key]
                 ) );
+
+            return { ...state };
+
+        case 'COLLECTION_COLORS_FETCHED':
+
+            state[action.collection.key].colors = action.collection.colors;
+
+            return { ...state };
+
+        case 'COLLECTION_VIDEOS_FETCHED':
+
+            state[action.collection.key].videos = action.collection.videos
+
+            return { ...state };
+
+        case 'COLLECTION_VIDEO_ADDED':
+
+            if (isObject(action.collection.video) && !isEmpty(action.collection.video))
+                Object.keys(action.collection.video).map( (key) => {
+
+                    if (isEmpty(state[action.collection.key].videos))
+                        state[action.collection.key].videos = {};
+
+                    state[action.collection.key].videos[key] = action.collection.video[key];
+
+                    return action.collection.video[key];
+                } );
+
+            return { ...state };
+
+        case 'COLLECTION_VIDEO_CHANGED':
+
+            if (isObject(action.collection.video) && !isEmpty(action.collection.video))
+                Object.keys(action.collection.video).map( (key) => {
+                    
+                    if (isEmpty(state[action.collection.key].videos))
+                        state[action.collection.key].videos = {};
+
+                    state[action.collection.key].videos[key] = action.collection.video[key];
+
+                    return action.collection.video[key];
+                } );
+
+            return { ...state };
+
+        case 'COLLECTION_VIDEO_REMOVED':
+
+            let collectionVideos = {};
+
+            if (isObject(action.collection.video) && !isEmpty(action.collection.video))
+                Object.keys(action.collection.video).map( (key) => {
+
+                    if (!isEmpty(state[action.collection.key].videos)) {
+                        
+                        collectionVideos = state[action.collection.key].videos;
+
+                        if (isArray(collectionVideos)) collectionVideos.splice(key, 1);
+                        else delete collectionVideos[key];
+
+                        state[action.collection.key].videos = collectionVideos;
+                    }
+
+                    return collectionVideos;
+                } );
 
             return { ...state };
 

@@ -34,16 +34,17 @@ const Profile = function (props) {
               renderLeft={ () =>
                   <Button iconLeft transparent onPress={ props.back }>
                       <Icon name="arrow-back" ios="ios-arrow-back" android="md-arrow-back" style={ [Styles.textUbandaniLight, Styles.textShadow, styles.headerIcon] } />
-                      { isIOS() && <Text styles={ [Styles.textUbandaniLight, Styles.textShadow] }>Stories</Text> }
+                      { isIOS() && <Text style={ [Styles.textUbandaniLight, Styles.textShadow] }>Stories</Text> }
                   </Button>
               }
               renderRight={ () =>
                   <Button iconRight transparent onPress={ props.editProfile }>
                       <Icon name="create" ios="ios-create" android="md-create" style={ [Styles.textUbandaniLight, Styles.textShadow, styles.headerIcon] } />
-                      { isIOS() && <Text styles={ [Styles.textUbandaniLight, Styles.textShadow] }>Settings</Text> }
+                      { isIOS() && <Text style={ [Styles.textUbandaniLight, Styles.textShadow] }>Settings</Text> }
                   </Button>
               }
-              headerMaxHeight={240}
+              headerMaxHeight={ 240 }
+              noBorder={ true }
               imageSource={ require('../../assets/md_Profile_Placeholder.png') }
               toolBarColor={ (isIOS())? 'transparent' : Styles.backgroundUbandani.backgroundColor }
             >

@@ -14,6 +14,7 @@ import fcm_token from './fcm_token';
 import collections from './collections';
 import films from './films';
 import music from './music';
+import playing from './playing';
 
 // Combiner all reducers
 const reducers = combineReducers({
@@ -29,6 +30,7 @@ const reducers = combineReducers({
     collections: collections,
     films: films,
     music: music,
+    playing: playing
 });
 
 export default reducers;

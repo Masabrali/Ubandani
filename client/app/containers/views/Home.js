@@ -21,16 +21,17 @@ import logScreen from '../../actions/logScreen';
 import fetchCollections from '../../actions/collections';
 import fetchFilms from '../../actions/films';
 import fetchMusic from '../../actions/music';
+import removePlaying from '../../actions/removePlaying';
 
 /**
  * Import Components
 */
-import StoriesComponent from '../../components/views/Stories';
+import HomeComponent from '../../components/views/Home';
 import Error from '../../components/others/Error';
 
 type Props = {};
 
-class Stories extends Component<Props> {
+class Home extends Component<Props> {
 
     constructor(props) {
 
@@ -40,23 +41,27 @@ class Stories extends Component<Props> {
         // Initialize state
         this.state = {
             segment: 'all',
+            playing: props.playing,
             defaultThumbnail: require('../../assets/Play_Background.png'),
             coverFlowView: true,
             listView: false,
             switchingViews: false,
             collectionsLoading: false,
+            collectionsRefreshing: false,
             collections: {
                 all: props.collections,
                 puppets: this.extractCategory(props.collections, "puppets"),
                 animation: this.extractCategory(props.collections, "animation")
             },
             filmsLoading: false,
+            filmsRefreshing: false,
             films: {
                 all: props.films,
                 puppets: this.extractCategory(props.films, "puppets"),
                 animation: this.extractCategory(props.films, "animation")
             },
             musicLoading: false,
+            musicRefreshing: false,
             music: {
                 all: props.music,
                 puppets: this.extractCategory(props.music, "puppets"),
@@ -72,9 +77,10 @@ class Stories extends Component<Props> {
         // Bind functions to this
         this.extractCategory = this.extractCategory.bind(this);
         this.changeSegment = this.changeSegment.bind(this);
+        this.removePlaying = this.removePlaying.bind(this);
         this.profile = this.profile.bind(this);
         this.player = this.player.bind(this);
-        this.story = this.story.bind(this);
+        this.collection = this.collection.bind(this);
         this.switchViews = this.switchViews.bind(this);
         this.handleError = this.handleError.bind(this);
         this.fetchCollections = this.fetchCollections.bind(this);
@@ -89,7 +95,7 @@ class Stories extends Component<Props> {
             this.refresh();
         else this.refresh(true);
 
-        this.props.logScreen('Stories', 'Stories', { gender: this.props.user.gender, age: parseInt(Math.floor(moment.duration(moment(new Date()).diff(moment(this.props.user.birth))).asYears())) });
+        this.props.logScreen('Home', 'Home', { gender: this.props.user.gender, age: parseInt(Math.floor(moment.duration(moment(new Date()).diff(moment(this.props.user.birth))).asYears())) });
 
         return SplashScreen.hide();
     }
@@ -112,7 +118,8 @@ class Stories extends Component<Props> {
                     all: props.music,
                     puppets: this.extractCategory(props.music, "puppets"),
                     animation: this.extractCategory(props.music, "animation")
-                }
+                },
+                playing: props.playing
             })
         );
     }
@@ -135,16 +142,33 @@ class Stories extends Component<Props> {
         return this.setState({ segment: segment });
     }
 
+    removePlaying() {
+        return this.props.removePlaying(this.state.playing);
+    }
+
     profile() {
         return Actions.profile();
     }
 
-    player(video) {
-        return Actions.player({ video: video });
+    player(video, nextVideos) {
+
+        let keys = Object.keys(nextVideos);
+        let _keys = ([ ...keys ]).reverse();
+        let newKeys = (keys.splice(keys.indexOf('c') + 1)).concat(_keys.splice(_keys.indexOf('c') + 1).reverse());
+
+        // console.log(keys)
+        // console.log(_keys)
+        // console.log(newKeys);
+
+        let _nextVideos = {};
+
+        newKeys.map( (key) => ( _nextVideos[key] = nextVideos[key] ) );
+
+        return Actions.player({ video: video, nextVideos: _nextVideos });
     }
 
-    story(story) {
-        return Actions.story({ story: story });
+    collection(collection) {
+        return Actions.collection({ collection: collection });
     }
 
     switchViews(coverFlowView, listView) {
@@ -206,13 +230,13 @@ class Stories extends Component<Props> {
                         return ( silent || this.setState({
                             errors,
                             collectionsLoading: false,
-                            refreshing: false
+                            collectionsRefreshing: false
                         }) );
 
                     } else
                         return ( silent || this.setState({
                             collectionsLoading: false,
-                            refreshing: false,
+                            collectionsRefreshing: false,
                             errors: {}
                         }) );
 
@@ -246,13 +270,13 @@ class Stories extends Component<Props> {
                         return ( silent || this.setState({
                             errors,
                             filmsLoading: false,
-                            refreshing: false
+                            filmsRefreshing: false
                         }) );
 
                     } else
                         return ( silent || this.setState({
                             filmsLoading: false,
-                            refreshing: false,
+                            filmsRefreshing: false,
                             errors: {}
                         }) );
 
@@ -286,13 +310,13 @@ class Stories extends Component<Props> {
                         return ( silent || this.setState({
                             errors,
                             musicLoading: false,
-                            refreshing: false
+                            musicRefreshing: false
                         }) );
 
                     } else
                         return ( silent || this.setState({
                             musicLoading: false,
-                            refreshing: false,
+                            musicRefreshing: false,
                             errors: {}
                         }) );
 
@@ -310,6 +334,9 @@ class Stories extends Component<Props> {
         // Hand;e Data Submission to server
         if (isEmpty(errors)) {
 
+            if (!silent)
+                this.setState({ collectionsRefreshing: true, filmsRefreshing: true, musicRefreshing: true });
+
             this.fetchCollections(silent);
 
             this.fetchFilms(silent);
@@ -320,23 +347,28 @@ class Stories extends Component<Props> {
 
     render() {
         return (
-            <StoriesComponent
+            <HomeComponent
                 segment={ this.state.segment }
+                playing={ this.state.playing }
                 coverFlowView={ this.state.coverFlowView }
                 listView={ this.state.listView }
                 switchingViews={ this.state.switchingViews }
                 defaultThumbnail={ this.state.defaultThumbnail }
                 collectionsLoading={ this.state.collectionsLoading }
+                collectionsRefreshing={ this.state.collectionsRefreshing }
                 collections={ this.state.collections }
                 filmsLoading={ this.state.filmsLoading }
+                filmsRefreshing={ this.state.filmsRefreshing }
                 films={ this.state.films }
                 musicLoading={ this.state.musicLoading }
+                musicRefreshing={ this.state.musicRefreshing }
                 music={ this.state.music }
                 errors={ this.state.errors }
                 changeSegment={ this.changeSegment }
+                removePlaying={ this.removePlaying }
                 profile={ this.profile }
                 player={ this.player }
-                story={ this.story }
+                collection={ this.collection }
                 switchViews={ this.switchViews }
                 refresh={ this.refresh }
             />
@@ -347,10 +379,11 @@ class Stories extends Component<Props> {
 /**
  * Container PropTypes
 */
-Stories.propTypes = {
+Home.propTypes = {
     user: PropTypes.object.isRequired,
     collections: PropTypes.object.isRequired,
     films: PropTypes.object.isRequired,
+    playing: PropTypes.object.isRequired,
     music: PropTypes.object.isRequired,
     logScreen: PropTypes.func.isRequired
 };
@@ -363,7 +396,8 @@ function mapStateToProps(state) {
         user: state.user,
         collections: state.collections,
         films: state.films,
-        music: state.music
+        music: state.music,
+        playing: state.playing
     };
 }
 
@@ -376,10 +410,11 @@ function matchDispatchToProps(dispatch) {
         fetchCollections: fetchCollections,
         fetchFilms: fetchFilms,
         fetchMusic: fetchMusic,
+        removePlaying: removePlaying
     }, dispatch);
 }
 
 /**
  * Exporting the Container
 */
-export default connect(mapStateToProps, matchDispatchToProps)(Stories);
+export default connect(mapStateToProps, matchDispatchToProps)(Home);

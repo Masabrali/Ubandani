@@ -61,7 +61,7 @@ const Verify = function (props) {
 	        	</View>
 	        	<View style={ [Styles.doublePadding, Styles.marginBottom] }>
         			<Button block light bordered style={ [Styles.backgroundWrapperTransparent] }>
-        				<Text styles={ [Styles.textPlaceholder] }>Verify</Text>
+        				<Text style={ [Styles.textPlaceholder] }>Verify</Text>
         			</Button>
         		</View>
         		<View style={ [Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.doublePadding] }>

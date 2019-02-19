@@ -169,6 +169,7 @@ repositories {
 }
 
 dependencies {
+    
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation( "com.facebook.react:react-native:+" ) {
@@ -177,6 +178,9 @@ dependencies {
     implementation "com.android.support:multidex:1.0.3"
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
+    implementation project(':react-native-linear-gradient')
+    implementation project(':react-native-fetch-blob')
+    implementation project(':react-native-palette')
     implementation project(':react-native-android-sms-listener')
     implementation project(':react-native-splash-screen')
     implementation project(':react-native-firebase')

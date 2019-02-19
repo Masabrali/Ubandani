@@ -14,7 +14,7 @@ export default function (state = {}, action = {}) {
 
         case 'MUSIC_FETCHED':
 
-            return action.films;
+            return action.music;
 
         case 'MUSIC_ADDED':
 

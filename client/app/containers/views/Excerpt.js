@@ -7,7 +7,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Actions } from 'react-native-router-flux';
 import SplashScreen from 'react-native-splash-screen';
-import firebase from 'react-native-firebase'; // Version can be specified in package.json
+import firebase from 'react-native-firebase';
+import moment from 'moment'; // Version can be specified in package.json
 
 
 /**
@@ -37,7 +38,9 @@ class Excerpt extends Component<Props> {
         super(props);
 
         // Initialize state
-        this.state = {};
+        this.state = {
+            defaultThumbnail: require('../../assets/Play_Background.png')
+        };
 
         // Bind functions to this
         this.back = this.back.bind(this);
@@ -46,7 +49,7 @@ class Excerpt extends Component<Props> {
     }
 
     componentDidMount() {
-        return this.props.logScreen('Excerpt', 'Excerpt');
+        return this.props.logScreen('Excerpt', 'Excerpt', { gender: this.props.user.gender, age: parseInt(Math.floor(moment.duration(moment(new Date()).diff(moment(this.props.user.birth))).asYears())) });
     }
 
     back() {
@@ -54,16 +57,18 @@ class Excerpt extends Component<Props> {
     }
 
     like() {
-        return Actions.like();
+        // return Actions.like();
     }
 
     share() {
-        return Actions.share();
+        // return Actions.share();
     }
 
     render() {
         return (
             <ExcerptComponent
+              item={ this.props.item }
+              reference={ this.props.reference }
               back={ this.back }
               like={ this.like }
               share={ this.share }
@@ -76,6 +81,8 @@ class Excerpt extends Component<Props> {
  * Container PropTypes
 */
 Excerpt.propTypes = {
+    user: PropTypes.object.isRequired,
+    item: PropTypes.object.isRequired,
     logScreen: PropTypes.func.isRequired
 };
 
@@ -83,7 +90,9 @@ Excerpt.propTypes = {
  * Matching State to PropTypes
 */
 function mapStateToProps(state) {
-    return {};
+    return {
+        user: state.user
+    };
 }
 
 /**

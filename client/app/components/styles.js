@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
      * Text Style Utilities
     */
     textAlignCenter: { textAlign: 'center' },
+    textAlignLeft: { textAlign: 'left' },
     textAlignRight: { textAlign: 'right' },
     textBold: { fontWeight: 'bold' },
     textXXXLarge: { fontSize: 26 },
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
     textLink: { color: '#007bff' },
     textPlaceholder: { color: '#777777' },
     textLabel: { color: '#666666' },
-    textSubTitle: { color: '#616167' },
+    textSubtitle: { color: '#616167' },
     textCopyRight: {
         color: '#555555',
         fontSize: 14

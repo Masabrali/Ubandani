@@ -8,6 +8,9 @@ import android.content.Context;
 
 import android.content.IntentFilter;
 import com.facebook.react.ReactApplication;
+import com.BV.LinearGradient.LinearGradientPackage;
+import com.RNFetchBlob.RNFetchBlobPackage;
+import io.palette.RNPalettePackage;
 import com.centaurwarchief.smslistener.SmsListenerPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.ianlin.RNCarrierInfo.RNCarrierInfoPackage;
@@ -50,6 +53,9 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
+                  new LinearGradientPackage(),
+                  new RNFetchBlobPackage(),
+                  new RNPalettePackage(),
                   new SmsListenerPackage(),
                   new ImagePickerPackage(),
                   new RNCarrierInfoPackage(),

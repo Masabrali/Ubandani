@@ -1,3 +1,3 @@
 export default function isArray(arr) {
-    return (typeof arr === 'array');
+    return (!!arr && (arr instanceof Array || typeof arr === "array"));
 }
