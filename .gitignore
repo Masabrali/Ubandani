@@ -4,5 +4,6 @@
 /client/android/app/src/main/res/values/com_crashlytics_export_strings.xml
 /client/android/keystores
 /client/android/app/ubandani-release-key.keystore
-/client/android/app/build/outputs/mytrace.txt
+/client/android/app/build
 /client/android/.gradle
+/client/android/.idea
