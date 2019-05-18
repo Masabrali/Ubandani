@@ -7,8 +7,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Actions } from 'react-native-router-flux';
 import moment from 'moment';
-import { ImageCacheManager } from 'react-native-cached-image';
-import { getAllSwatches } from 'react-native-palette';
 import chroma from 'chroma-js'; // Version can be specified in package.json
 
 /**
@@ -22,6 +20,7 @@ import isEmpty from '../../utilities/isEmpty';
 import setCollectionColors from '../../actions/setCollectionColors';
 import fetchCollectionVideos from '../../actions/collectionVideos';
 import cacheImage from '../../actions/cacheImage';
+import imageColors from '../../actions/imageColors';
 import logScreen from '../../actions/logScreen';
 
 /**
@@ -55,9 +54,8 @@ class Collection extends Component<Props> {
             videosRefreshing: false,
             errors: {},
             done: false,
-            coverOverlay: require('../../assets/Play_Background_Gradient.png'),
             defaultCover: require('../../assets/Play_Background.png'),
-            cover: (!!props.collection.cover)? { uri: props.collection.cover } : props.collection.cover,
+            cover: (!!props.collection.cover)? { uri: props.collection.cover } : undefined,
             headerBackgroundColor: headerBackgroundColor || Styles.backgroundUbandaniLight.backgroundColor,
             headerTitleColor: headerTitleColor || Styles.textUbandaniDark.color,
             headerSubtitleColor: headerSubtitleColor || Styles.textUbandaniDark.color,
@@ -104,20 +102,18 @@ class Collection extends Component<Props> {
 
     player(video) {
 
-        let nextVideos = this.state.collection.videos;
-        let keys = Object.keys(this.state.collection.videos);
-        let _keys = ([ ...keys ]).reverse();
-        let newKeys = (keys.splice(keys.indexOf('c') + 1)).concat(_keys.splice(_keys.indexOf('c') + 1).reverse());
-
-        let _nextVideos = {};
-
-        newKeys.map( (key) => ( _nextVideos[key] = nextVideos[key] ) );
-
-        return Actions.player({ video: video, nextVideos: _nextVideos, reference: "collection" });
+        return (
+            Actions.player({
+                video,
+                section: "collections",
+                category: this.props.category,
+                collection: this.state.collection.id
+            })
+        );
     }
 
     excerpt() {
-        return Actions.excerpt({ item: this.state.collection, reference: "collection" });
+        return Actions.excerpt({ item: this.state.collection });
     }
 
     handleError(error, silent) {
@@ -161,41 +157,39 @@ class Collection extends Component<Props> {
                         try {
                             
                             return (
-                                getAllSwatches({ quality: "high" }, coverPath, (error, swatches) => {
-                                    
-                                    if (error) return this.handleError(error);
-                                    else {
-                                        
-                                        swatches.sort( (a, b) => ( (b.color.population + chroma(b.color).luminance()) - (a.color.population + chroma(a.color).luminance()) ) );
+                                this.props.imageColors({ quality: "high" }, coverPath).then( (colors) => {
 
-                                        const LUMINANCE = chroma(swatches[0].color).luminance();
+                                    colors.sort( (a, b) => ( (b.color.population + chroma(b.color).luminance()) - (a.color.population + chroma(a.color).luminance()) ) );
 
-                                        const COLLECTION_COLORS = {
-                                            headerBackgroundColor: swatches[0].color,
-                                            headerTitleColor: (LUMINANCE < 0.5)? Styles.textUbandaniLight.color : Styles.textUbandaniDark.color,
-                                            headerSubtitleColor: (LUMINANCE < 0.5)? Styles.textUbandaniLight.color : Styles.textUbandaniDark.color,
-                                            statusbarStyle: (LUMINANCE < 0.5)? "light-content" : "dark-content"
-                                        };
+                                    const LUMINANCE = chroma(colors[0].color).luminance();
 
-                                        this.props.setCollectionColors({
-                                            key: this.state.collection.id,
-                                            colors: COLLECTION_COLORS
-                                        });
+                                    const COLLECTION_COLORS = {
+                                        headerBackgroundColor: colors[0].color,
+                                        headerTitleColor: (LUMINANCE < 0.5)? Styles.textUbandaniLight.color : Styles.textUbandaniDark.color,
+                                        headerSubtitleColor: (LUMINANCE < 0.5)? Styles.textUbandaniLight.color : Styles.textUbandaniDark.color,
+                                        statusbarStyle: (LUMINANCE < 0.5)? "light-content" : "dark-content"
+                                    };
 
-                                        return (
-                                            this.setState({
-                                                loading: false,
-                                                errors: {},
-                                                ...COLLECTION_COLORS
-                                            })
-                                        );
-                                    }
-                                } )
+                                    this.props.setCollectionColors({
+                                        key: this.state.collection.id,
+                                        colors: COLLECTION_COLORS
+                                    });
+
+                                    this.setState({ ...COLLECTION_COLORS });
+
+                                    return (
+                                        setTimeout( () => (
+                                            this.setState({ loading: false, errors: {} })
+                                        ), 500)
+                                    );
+
+                                }, this.handleError)
+                                .catch(this.handleError)
                             );
+
                         } catch (error) {
                             return this.handleError(error);
                         }
-
                     }
 
                 }, this.handleError)
@@ -218,7 +212,7 @@ class Collection extends Component<Props> {
                 this.props.fetchCollectionVideos({ ...this.state.collection, silent }).then(
                 (data) => {
 
-                    if (!silent && !isEmpty(data.errors)) { console.log(data.errors)
+                    if (!silent && !isEmpty(data.errors)) {
 
                         const errors = data.errors;
 
@@ -253,7 +247,6 @@ class Collection extends Component<Props> {
                 loading={ this.state.loading }
                 videosLoading={ this.state.videosLoading }
                 videosRefreshing={ this.state.videosRefreshing }
-                coverOverlay={ this.state.coverOverlay }
                 defaultCover={ this.state.defaultCover }
                 cover={ this.state.cover }
                 collection={ this.state.collection }
@@ -277,6 +270,7 @@ Collection.propTypes = {
     setCollectionColors: PropTypes.func.isRequired,
     fetchCollectionVideos: PropTypes.func.isRequired,
     cacheImage: PropTypes.func.isRequired,
+    imageColors: PropTypes.func.isRequired,
     logScreen: PropTypes.func.isRequired
 };
 
@@ -298,6 +292,7 @@ function matchDispatchToProps(dispatch) {
         setCollectionColors: setCollectionColors,
         fetchCollectionVideos: fetchCollectionVideos,
         cacheImage: cacheImage,
+        imageColors: imageColors,
         logScreen: logScreen
     }, dispatch);
 }

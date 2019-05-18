@@ -34,6 +34,15 @@ export default function (state = {}, action = {}) {
 
             return { ...state };
 
+        case 'MUSIC_VIEWED':
+            
+            if (isObject(action.music) && !isEmpty(action.music))
+                Object.keys(action.music).map( (key) => (
+                    state[key] = action.music[key]
+                ) );
+
+            return { ...state };
+            
         case 'MUSIC_REMOVED':
 
             if (isObject(action.music) && !isEmpty(action.music))

@@ -28,7 +28,7 @@ const Loader = function (props) {
 
                 {
                     !isEmpty(props.title) && <Header noShadow style={ [Styles.backgroundTransparent] }>
-                        <Body style={ [isAndrioid() && Styles.paddingLeft] }>
+                        <Body style={ [isAndroid() && Styles.paddingLeft] }>
                             <Title style={ [Styles.textBold, { color: props.titleColor || Styles.textDark.color }] }>{ props.title }</Title>
                         </Body>
                     </Header>
@@ -37,7 +37,7 @@ const Loader = function (props) {
                 <Content padder contentContainerStyle={ [Styles.flex, Styles.flexColumn, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.padding] }>
                     <Spinner color={ props.spinnerColor || Styles.textLabel.color } />
 
-                    <Text style={ [Styles.padding, Styles.textAlignCenter, styles.loaderText, { color: props.textColor || Styles.textLabel.color }] }>{ (props.text)? props.text : 'Loading...' }</Text>
+                    <Text style={ [Styles.padding, Styles.textAlignCenter, Styles.textLarge, { color: props.textColor || Styles.textLabel.color }] }>{ (props.text)? props.text : 'Loading...' }</Text>
                 </Content>
 
             </Container>
@@ -48,8 +48,6 @@ const Loader = function (props) {
 /**
  * Styles
 */
-const styles = StyleSheet.create({
-    loaderText: { fontSize: 20 }
-});
+const styles = StyleSheet.create({});
 
 export default Loader;

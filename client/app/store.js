@@ -21,7 +21,8 @@ const store = createStore(
     persistReducer( {
             key: 'root',
             storage,
-            stateReconciler: hardSet
+            stateReconciler: hardSet,
+            blacklist: []
         },
         reducers
     ),

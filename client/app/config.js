@@ -6,4 +6,4 @@ export const GOOGLE_API_KEY = 'AIzaSyAPTgxhyFtQF0tOQwbKiPA1QQOsFpy43I8';
 
 export const DEV = false;
 
-export const TIMEOUT = 10;
+export const TIMEOUT = 15;

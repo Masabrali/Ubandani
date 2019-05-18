@@ -10,7 +10,6 @@ import countries from './countries';
 import country from './country';
 import links from './links';
 import invitation from './invitation';
-import fcm_token from './fcm_token';
 import collections from './collections';
 import films from './films';
 import music from './music';
@@ -26,7 +25,6 @@ const reducers = combineReducers({
     country: country,
     links: links,
     invitation: invitation,
-    fcm_token: fcm_token,
     collections: collections,
     films: films,
     music: music,

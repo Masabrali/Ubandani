@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
     /**
     * Position Styles
     */
+    positionRelative: { position: 'relative' },
     positionAbsolute: { position: 'absolute' },
     verticalPositionTop: { top: 0 },
     verticalPositionTop50: { bottom: '50%' },
@@ -76,6 +77,8 @@ const styles = StyleSheet.create({
     textAlignLeft: { textAlign: 'left' },
     textAlignRight: { textAlign: 'right' },
     textBold: { fontWeight: 'bold' },
+    textNormal: { fontWeight: 'normal' },
+    textThin: { fontWeight: '100' },
     textXXXLarge: { fontSize: 26 },
     textXXLarge: { fontSize: 24 },
     textXLarge: { fontSize: 22 },
@@ -83,7 +86,7 @@ const styles = StyleSheet.create({
     textMedium: { fontSize: 18 },
     textSmall: { fontSize: 14 },
     textXSmall: { fontSize: 12 },
-     textXXSmall: { fontSize: 10 },
+    textXXSmall: { fontSize: 10 },
     textPrimary: { color: (isAndroid())? '#3f51b5':'#007bff' },
     textSecondary: { color: '#6c757d' },
     textSuccess: { color: '#5cb85c' },
@@ -108,9 +111,13 @@ const styles = StyleSheet.create({
     textUbandaniLight: { color: '#fef6f0' },
     textUbandaniDark: { color: '#170f09' },
     textShadow: {
-        shadowColor: 'rgba(0, 0, 0, .75)',
-        shadowOffset: { width: 2, height: 2 },
-        shadowRadius: 5
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 2,
+            height: 2
+        },
+        shadowRadius: 5,
+        shadowOpacity: 0.5
     },
     /**
      * Border Style Utilities
@@ -159,9 +166,23 @@ const styles = StyleSheet.create({
     * Shadow Style Utlities
     */
     noShadow: {
-        shadowOffset: { height: 0, width: 0 },
+        shadowColor: 'rgba(0, 0, 0, 0)',
+        shadowOffset: {
+            height: 0,
+            width: 0
+        },
         shadowOpacity: 0,
         elevation: 0
+    },
+    shadow: {
+        shadowColor: '#000000',
+        shadowOffset: {
+          width: 3,
+          height: 3
+        },
+        shadowRadius: 5,
+        shadowOpacity: 1,
+        elevation: 1
     },
     shadowTop: {
         shadowColor: '#000000',
@@ -170,7 +191,38 @@ const styles = StyleSheet.create({
           height: -3
         },
         shadowRadius: 5,
-        shadowOpacity: 0.5
+        shadowOpacity: 1,
+        elevation: 1
+    },
+    shadowBottom: {
+        shadowColor: '#000000',
+        shadowOffset: {
+          width: 0,
+          height: 3
+        },
+        shadowRadius: 5,
+        shadowOpacity: 1,
+        elevation: 1
+    },
+    shadowLeft: {
+        shadowColor: '#000000',
+        shadowOffset: {
+          width: -3,
+          height: 0
+        },
+        shadowRadius: 5,
+        shadowOpacity: 1,
+        elevation: 1
+    },
+    shadowRight: {
+        shadowColor: '#000000',
+        shadowOffset: {
+          width: 3,
+          height: 0
+        },
+        shadowRadius: 5,
+        shadowOpacity: 1,
+        elevation: 1
     },
     /**
      * Table
@@ -264,6 +316,7 @@ const styles = StyleSheet.create({
     * Height Utilities
     */
     screenHeight: { height: screenHeight },
+    statusbarHeight: { height: (isAndroid())? StatusBar.currentHeight : 20 },
     heightAuto: { height: 'auto' },
     height100: { height: '100%' },
     maxHeight100: { maxHeight: '100%' },
@@ -389,27 +442,19 @@ const styles = StyleSheet.create({
     /**
      * Wrapper
      */
-    wrapper: {
-        backgroundColor: '#fef6f0'
-    },
+    wrapper: { backgroundColor: '#fef6f0' },
     /**
      * Header
      */
-    header: {
-        backgroundColor: '#fef6f0'
-    },
+    header: { backgroundColor: '#fef6f0' },
     /**
      * Content
      */
-    content: {
-        backgroundColor: '#ffffff'
-    },
+    content: { backgroundColor: '#ffffff' },
     /**
      * Footer
      */
-    footer: {
-        backgroundColor: '#fef6f0'
-    }
+    footer: { backgroundColor: '#fef6f0' }
 });
 
 export default styles;

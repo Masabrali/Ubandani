@@ -9,6 +9,9 @@ import org.devio.rn.splashscreen.SplashScreen;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
+import android.content.Intent;
+import android.content.res.Configuration;
+
 
 public class MainActivity extends ReactActivity {
 
@@ -27,14 +30,28 @@ public class MainActivity extends ReactActivity {
         Fabric.with(this, new Crashlytics());
     }
     
-    @Override
-
-     // public void invokeDefaultOnBackPressed() {
+    // @Override
+    // public void invokeDefaultOnBackPressed() {
     //
     //     // super.onBackPressed();
     //
     //     this.moveTaskToBack(true);
     // }
+
+    @Override
+
+    public void onConfigurationChanged(Configuration newConfig) {
+        
+        super.onConfigurationChanged(newConfig);
+
+        Intent intent = new Intent("onConfigurationChanged");
+        
+        intent.putExtra("newConfig", newConfig);
+        
+        this.sendBroadcast(intent);
+    }
+
+    @Override
 
     protected String getMainComponentName() {
         return "Ubandani";

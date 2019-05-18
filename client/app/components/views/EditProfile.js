@@ -26,7 +26,7 @@ import Styles from '../styles';
 
 const EditProfile = function (props) {
 	return (
-        <Container style={ [Styles.wrapper] }>
+        <Container style={ [Styles.backgroundKimyaKimyaLight] }>
         	<StatusBar />
 
         	<Content contentContainerStyle={ [Styles.backgroundKimyaKimyaLight] }>

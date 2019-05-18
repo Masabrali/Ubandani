@@ -1,6 +1,6 @@
-export default function (video) {
+export default function (seek) {
     return {
         type: 'VIDEO_SEEKED',
-        video
+        seek
     };
 }

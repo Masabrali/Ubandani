@@ -34,6 +34,15 @@ export default function (state = {}, action = {}) {
 
             return { ...state };
 
+        case 'FILM_VIEWED':
+
+            if (isObject(action.film) && !isEmpty(action.film))
+                Object.keys(action.film).map( (key) => (
+                    state[key] = action.film[key]
+                ) );
+
+            return { ...state };
+
         case 'FILM_REMOVED':
 
             if (isObject(action.film) && !isEmpty(action.film))

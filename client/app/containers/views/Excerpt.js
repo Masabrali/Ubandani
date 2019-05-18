@@ -5,8 +5,8 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { BackHandler } from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import SplashScreen from 'react-native-splash-screen';
 import firebase from 'react-native-firebase';
 import moment from 'moment'; // Version can be specified in package.json
 
@@ -42,14 +42,29 @@ class Excerpt extends Component<Props> {
             defaultThumbnail: require('../../assets/Play_Background.png')
         };
 
+        // Class Members
+        this.androidBackListener = undefined;
+
         // Bind functions to this
         this.back = this.back.bind(this);
         this.like = this.like.bind(this);
         this.share = this.share.bind(this);
     }
 
+    componentWillMount() {
+
+        if (isAndroid())
+            this.androidBackListener = BackHandler.addEventListener("hardwareBackPress", () => ( this.back() ));
+
+        return this.androidBackListener;
+    }
+
     componentDidMount() {
         return this.props.logScreen('Excerpt', 'Excerpt', { gender: this.props.user.gender, age: parseInt(Math.floor(moment.duration(moment(new Date()).diff(moment(this.props.user.birth))).asYears())) });
+    }
+
+    componentWillUnmount() {
+        return (isAndroid())? this.androidBackListener.remove() : 1;
     }
 
     back() {

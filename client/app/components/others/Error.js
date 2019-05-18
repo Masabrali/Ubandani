@@ -14,7 +14,7 @@ import { Toast } from 'native-base'; // Version can be specified in package.json
 */
 import Styles from '../styles';
 
-const Error = function (error, duration) {
+const Error = function (error, duration, position) {
 
     let text = ((!!error.type)? error.type + ': ':'') + ((!!error.message)? error.message : error);
     let index = text.indexOf('Error: ');
@@ -23,7 +23,7 @@ const Error = function (error, duration) {
 
     Toast.show({
         type: 'danger',
-        position: 'top',
+        position: (position)? position : 'top',
         duration: duration || 3000,
         text: text,
         buttonText: 'DISMISS'

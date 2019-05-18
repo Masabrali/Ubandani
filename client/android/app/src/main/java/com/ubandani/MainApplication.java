@@ -8,6 +8,9 @@ import android.content.Context;
 
 import android.content.IntentFilter;
 import com.facebook.react.ReactApplication;
+import net.zubricky.AndroidKeyboardAdjust.AndroidKeyboardAdjustPackage;
+import com.github.yamill.orientation.OrientationPackage;
+import com.brentvatne.react.ReactVideoPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import io.palette.RNPalettePackage;
@@ -22,7 +25,7 @@ import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import io.invertase.firebase.database.RNFirebaseDatabasePackage;
 import io.invertase.firebase.firestore.RNFirebaseFirestorePackage;
-// import io.invertase.firebase.functions.RNFirebaseFunctionsPackage;
+import io.invertase.firebase.functions.RNFirebaseFunctionsPackage;
 import io.invertase.firebase.storage.RNFirebaseStoragePackage;
 import io.invertase.firebase.links.RNFirebaseLinksPackage;
 import io.invertase.firebase.invites.RNFirebaseInvitesPackage;
@@ -39,7 +42,6 @@ import com.facebook.soloader.SoLoader;
 import java.util.Arrays;
 import java.util.List;
 
-
 public class MainApplication extends Application implements ReactApplication {
 
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
@@ -53,6 +55,9 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
+                  new AndroidKeyboardAdjustPackage(),
+                  new OrientationPackage(),
+                  new ReactVideoPackage(),
                   new LinearGradientPackage(),
                   new RNFetchBlobPackage(),
                   new RNPalettePackage(),
@@ -66,7 +71,7 @@ public class MainApplication extends Application implements ReactApplication {
                   new RNFirebaseAuthPackage(),
                   new RNFirebaseDatabasePackage(),
                   new RNFirebaseFirestorePackage(),
-                  // new RNFirebaseFunctionsPackage(),
+                  new RNFirebaseFunctionsPackage(),
                   new RNFirebaseStoragePackage(),
                   new RNFirebaseLinksPackage(),
                   new RNFirebaseInvitesPackage(),

@@ -55,6 +55,7 @@ const tabIcon = (icon, _icon) => {
 };
 
 const Routes = function () {
+
     return (
         <Router>
             <Modal>
@@ -84,6 +85,6 @@ const Routes = function () {
             </Modal>
         </Router>
     );
-}
+};
 
 export default Routes;

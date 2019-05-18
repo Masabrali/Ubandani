@@ -36,11 +36,11 @@ export default function() {
 							
 							isConnected = { isConnected: isConnected, timeout: undefined };
 
-							isConnected.handleTimeout = (errorHandler) => {
+							isConnected.handleTimeout = (errorHandler, timeout) => {
 									
 									isConnected.timeout = setTimeout( () => (
 										errorHandler(new Error("No Internet Connection available", "ERR_CONNECTION_TIMEOUT"))
-									), TIMEOUT * 1000)
+									), (timeout || TIMEOUT) * 1000)
 
 									return isConnected.timeout;
 								};

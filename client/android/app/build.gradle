@@ -154,7 +154,7 @@ android {
         variant.outputs.each { output ->
             // For each separate APK per architecture, set a unique version code as described here:
             // http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits
-            def versionCodes = ["armeabi-v7a":1, "x86":2]
+            def versionCodes = ["armeabi-v7a":1, "x86":2, "arm64-v8a": 3, "x86_64": 4]
             def abi = output.getFilter(OutputFile.ABI)
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
@@ -168,6 +168,18 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 
+configurations.all {
+    
+    // all*.exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    // all*.exclude group: 'com.squareup.okio', module: 'okio'
+ 
+    // resolutionStrategy.force "com.squareup.okhttp3:okhttp:${rootProject.ext.okHttpVersion}"
+    // resolutionStrategy.force "com.squareup.okio:okio:${rootProject.ext.okioVersion}"
+ 
+    // all*.exclude group: 'com.github.bumptech.glide', module: 'glide'
+    // all*.exclude group: 'org.litepal.android', module: 'core'
+}
+
 dependencies {
     
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -178,6 +190,12 @@ dependencies {
     implementation "com.android.support:multidex:1.0.3"
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
+    implementation project(':react-native-android-keyboard-adjust')
+    implementation project(':react-native-orientation')
+    implementation(project(':react-native-video')) {
+        exclude group: "com.squareup.okhttp3", module: "okhttp"
+        exclude group: "com.squareup.okio", module: "okio"
+    }
     implementation project(':react-native-linear-gradient')
     implementation project(':react-native-fetch-blob')
     implementation project(':react-native-palette')
@@ -187,6 +205,9 @@ dependencies {
     implementation project(':react-native-image-picker')
     implementation project(':react-native-carrier-info')
     implementation project(':react-native-device-info')
+
+    implementation "com.squareup.okhttp3:okhttp:${rootProject.ext.okHttpVersion}";
+    implementation "com.squareup.okio:okio:${rootProject.ext.okioVersion}"
 
     implementation "com.android.support:support-v4:${rootProject.ext.supportLibVersion}"
     implementation "com.android.support:support-compat:${rootProject.ext.supportLibVersion}"
@@ -200,7 +221,7 @@ dependencies {
     implementation "com.google.firebase:firebase-auth:${rootProject.ext.googleFirebaseAuthenicationVersion}"
     implementation "com.google.firebase:firebase-database:${rootProject.ext.googleFirebaseDatabaseVersion}"
     implementation "com.google.firebase:firebase-firestore:${rootProject.ext.googleFirebaseFirestoreVersion}"
-    // implementation "com.google.firebase:firebase-functions:${rootProject.ext.googleFirebaseFunctionsVersion}"
+    implementation "com.google.firebase:firebase-functions:${rootProject.ext.googleFirebaseFunctionsVersion}"
     implementation "com.google.firebase:firebase-storage:${rootProject.ext.googleFirebaseStorageVersion}"
     implementation "com.google.firebase:firebase-dynamic-links:${rootProject.ext.googleFirebaseDynamicLinksVersion}"
     implementation "com.google.firebase:firebase-invites:${rootProject.ext.googleFirebaseInvitesVersion}"

@@ -46,7 +46,7 @@ const Help = function (props) {
                 <View style={ [Styles.flex, Styles.flexColumn, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.backgroundUbandani, Styles.doublePaddingBottom] }>
                     <View style={ [styles.logoContainer, Styles.flexColumn, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginTop] }>
                         <Image source={ require('../../assets/logo_text.png') } resizeMode="contain" style={ [Styles.imageResizeModeContain, styles.logo] } />
-                        <Text style={ [Styles.textAlignCenter, Styles.textLabel, Styles.halfMarginBottom, styles.catchPhrase, isAndroid() && { fontFamily: 'sans-serif-thin' }] }>Stories we can all relate with</Text>
+                        <Text style={ [Styles.textAlignCenter, Styles.textWhite, Styles.halfMarginBottom, styles.catchPhrase, isAndroid() && { fontFamily: 'sans-serif-thin' }] }>Stories we can all relate with</Text>
                     </View>
                 </View>
                 <View>
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
         width: 140,
         height: 140
     },
-    catchPhrase: { fontSize: 13 },
+    catchPhrase: { fontSize: 14, fontWeight: 'bold' },
     padding: { padding: 5 }
 });
 

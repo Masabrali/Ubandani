@@ -1,5 +1,7 @@
 /client/app/config.js
 /client/android/app/gradle.properties
 /client/android/app/src/main/AndroidManifest.xml
+/client/android/app/src/main/res/values/com_crashlytics_export_strings.xml
+/client/android/keystores
 /client/android/app/ubandani-release-key.keystore
 /client/android/app/build/outputs/mytrace.txt

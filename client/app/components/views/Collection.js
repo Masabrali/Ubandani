@@ -2,8 +2,8 @@
  * Import React and React Native
  */
 import React from 'react';
-import { StyleSheet, View, RefreshControl } from 'react-native';
-import { Container, Left, Body, Right, Content, Text, List, ListItem, Thumbnail, Spinner, Button, Icon } from 'native-base';
+import { StyleSheet, View, RefreshControl, FlatList } from 'react-native';
+import { Container, Left, Body, Right, Content, Text, ListItem, Thumbnail, Spinner, Button, Icon } from 'native-base';
 import moment from 'moment';
 import momentDurationFormat from 'moment-duration-format'; // Version can be specified in package.json
 
@@ -11,6 +11,7 @@ import momentDurationFormat from 'moment-duration-format'; // Version can be spe
  * Import Utilities
 */
 import titleCase from '../../utilities/titleCase';
+import abbreviateNumber from '../../utilities/abbreviateNumber';
 import isEmpty from '../../utilities/isEmpty';
 import isAndroid from '../../utilities/isAndroid';
 import isIOS from '../../utilities/isIOS';
@@ -18,8 +19,8 @@ import isIOS from '../../utilities/isIOS';
 /**
  * Import other components
 */
-import StatusBar from '../../components/others/StatusBar';
 import AnimatedHeader from '../../components/others/AnimatedHeader';
+import StatusBar from '../../components/others/StatusBar';
 import Loader from '../../components/others/Loader';
 
 /**
@@ -42,15 +43,17 @@ const Collection = function (props) {
                   </Button>
               }
               renderRight={ () =>
-                  <Button iconRight transparent onPress={ props.share }>
-                      <Icon name="share" ios="ios-share" android="md-share" style={ [{ color: props.headerTitleColor }, Styles.textShadow, styles.headerIcon] } />
-                      { isIOS() && <Text style={ [{ color: props.headerTitleColor }, Styles.textUbandaniLight, Styles.textShadow] }>Share</Text> }
-                  </Button>
+                  { false && <Button iconRight transparent onPress={ props.share }>
+                        <Icon name="share" ios="ios-share" android="md-share" style={ [{ color: props.headerTitleColor }, Styles.textShadow, styles.headerIcon] } />
+                        { isIOS() && <Text style={ [{ color: props.headerTitleColor }, Styles.textUbandaniLight, Styles.textShadow] }>Share</Text> }
+                    </Button>
+                  }
               }
               titleStyle={ [Styles.textXXXLarge, { color: props.headerTitleColor }] }
               subtitleStyle={ [{ color: props.headerSubtitleColor }] }
               headerDefaultHeight={ 200 }
               headerMaxHeight={ 300 }
+              noBorder={ true }
               imageSource={ (!!props.cover)? props.cover : props.defaultCover }
               imageHeight={ 200 }
               toolbarColor={ props.headerBackgroundColor }
@@ -64,39 +67,36 @@ const Collection = function (props) {
                         onRefresh={ props.fetchCollectionVideos }
                       />
                   }
-                  contentContainerStyle={ [Styles.noPadding] }
                 >
                     <StatusBar backgroundColor={ props.headerBackgroundColor } barStyle={ props.statusbarStyle } />
                     
-                    <View style={ [Styles.flexRow, Styles.flexJustifyEnd, Styles.flexAlignCenter, Styles.doublePadding, Styles.noPaddingBottom] }>
-                        { !!props.collection._videos && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginLeft] }>
-                              <Icon name="videocam" ios="ios-videocam" android="md-videocam" style={ [Styles.textSmall, Styles.textUbandani] } />
-                              <Text style={ [Styles.textSmall, Styles.textUbandani] }> { props.collection._videos }</Text>
+                    <View style={ [Styles.flexRow, Styles.flexJustifyStart, Styles.flexAlignCenter, Styles.doublePadding, Styles.noPaddingBottom] }>
+                        { !!props.collection._videos && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.doubleMarginRight] }>
+                              <Icon name="videocam" ios="ios-videocam" android="md-videocam" style={ [Styles.textLarge, Styles.textPlaceholder] } />
+                              <Text style={ [Styles.textSmall, Styles.textPlaceholder] }> { props.collection._videos }</Text>
                           </View>
                         }
-                        { !!props.collection.views && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginLeft] }>
-                              <Icon name="eye" ios="ios-eye" android="md-eye" style={ [Styles.textSmall, Styles.textUbandani] } />
-                              <Text style={ [Styles.textSmall, Styles.textUbandani] }> { props.collection.views }</Text>
+                        { !!props.collection.views && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.doubleMarginRight] }>
+                              <Icon name="eye" ios="ios-eye" android="md-eye" style={ [Styles.textLarge, Styles.textPlaceholder] } />
+                              <Text style={ [Styles.textSmall, Styles.textPlaceholder] }> { props.collection.views }</Text>
                           </View>
                         }
-                        { !!props.collection.shares && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginLeft] }>
-                              <Icon name="share" ios="ios-share" android="md-share" style={ [Styles.textSmall, Styles.textUbandani] } />
-                              <Text style={ [Styles.textSmall, Styles.textUbandani] }> { props.collection.shares }</Text>
+                        { !!props.collection.shares && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.doubleMarginRight] }>
+                              <Icon name="share" ios="ios-share" android="md-share" style={ [Styles.textLarge, Styles.textPlaceholder] } />
+                              <Text style={ [Styles.textSmall, Styles.textPlaceholder] }> { props.collection.shares }</Text>
                           </View>
                         }
-                        { !!props.collection.likes && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.marginLeft] }>
-                              <Icon name="heart" ios="ios-heart" android="md-heart" style={ [Styles.textSmall, Styles.textUbandani] } />
-                              <Text style={ [Styles.textSmall, Styles.textUbandani] }> { props.collection.likes }</Text>
+                        { !!props.collection.likes && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.doubleMarginRight] }>
+                              <Icon name="heart" ios="ios-heart" android="md-heart" style={ [Styles.textLarge, Styles.textPlaceholder] } />
+                              <Text style={ [Styles.textSmall, Styles.textPlaceholder] }> { props.collection.likes }</Text>
                           </View>
                         }
                     </View>
-                    <View style={ [Styles.padding, Styles.noPaddingBottom] }>
-                        <Text numberOfLines={3} style={ [Styles.textLabel, Styles.halfPadding] }>{ props.collection.description }</Text>
-                        { !!props.collection.excerpt && <View style={ [Styles.flex, Styles.flexRow, Styles.flexJustifyEnd, Styles.flexAlignCenter] }>
-                              <Button primary transparent onPress={ props.excerpt }>
-                                  <Text style={ [Styles.textPrimary] }>Read More</Text>
-                              </Button>
-                          </View>
+                    <View style={ [Styles.padding, Styles.noPaddingBottom, Styles.flexRow, Styles.flexAlignCenter] }>
+                        <Text numberOfLines={3} style={ [Styles.textLabel, Styles.halfPadding, Styles.flex] }>{ props.collection.description }</Text>
+                        { !!props.collection.excerpt && <Button primary transparent onPress={ props.excerpt }>
+                              <Text style={ [Styles.textPrimary] }>Read More</Text>
+                          </Button>
                         }
                     </View>
                     <View style={ [Styles.flex] }>
@@ -109,11 +109,20 @@ const Collection = function (props) {
                             }
                         </View>
                         <View style={ [Styles.flex, Styles.paddingTop] }>
-                            { !isEmpty(props.collection.videos) &&  <List
-                              style={ [Styles.doublePaddingBottom] }
-                              dataArray={ props.collection.videos }
-                              keyboardShouldPersistTaps="always"
-                              renderRow={ (item) =>
+                            { props.videosLoading && <View style={ [Styles.flex, Styles.flexColumn, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.doublePaddingTop, Styles.doublePaddingBottom] }>
+                                  <Spinner color={ Styles['textUbandani'].color } />
+                              </View>
+                            }
+                            { isEmpty(props.collection.videos) && !props.videosLoading && <View style={ [Styles.flex, Styles.flexColumn, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.doublePaddingTop, Styles.doublePaddingBottom] }>
+                                  <Text style={ [Styles.textLabel, Styles.textAlignCenter, Styles.padding, Styles.margin] }>No videos found</Text>
+                              </View>
+                            }
+                            { !isEmpty(props.collection.videos) && <FlatList
+                                  style={ [Styles.doublePaddingBottom] }
+                                  keyboardShouldPersistTaps="always"
+                                  data={ Object.values(props.collection.videos) }
+                                  keyExtractor={ (item) => ( item.id ) }
+                                  renderItem={ ({item}) =>
                                       <ListItem thumbnail square key={ item.id } onPress={ () => props.player(item) } style={ [Styles.marginBottom] }>
                                           <Left>
                                               <Thumbnail square large defaultSource={ props.defaultThumbnail } source={ (item.thumbnail)? { uri: item.thumbnail } : props.defaultThumbnail } style={ [{ width: 120 }] } />
@@ -121,15 +130,15 @@ const Collection = function (props) {
                                                   <Thumbnail small source={ require('../../assets/Play_Icon.png') } />
                                               </View>
                                               <View style={ [Styles.positionAbsolute, Styles.verticalPositionBottom, Styles.horizontalPositionRight, Styles.backgroundDark, Styles.halfMargin, { padding: 2, paddingRight: 3 }] }>
-                                                  <Text style={ [Styles.textLight, Styles.textXXSmall] }>
+                                                  <Text style={ [Styles.textUbandaniLight, Styles.textXXSmall] }>
                                                       { moment.duration(item.duration, "seconds").format("mm:ss", { trim: false }) }
                                                   </Text>
                                               </View>
                                           </Left>
                                           <Body style={ [Styles.paddingRight] }>
-                                              <View style={ [Styles.flexRow, Styles.flexJusityStart, Styles.flexAlignCenter] }>
-                                                  { !!item.prefix && <Text style={ [Styles.textLabel] }>{ item.prefix }: </Text> }
-                                                  <Text numberOfLines={1} style={ [Styles.textDark, Styles.flex] }>{ item.title }</Text>
+                                              <View style={ [Styles.flexRow, Styles.flexJusityStart, Styles.flexAlignStart] }>
+                                                  { !!item.prefix && <Text style={ [Styles.textLabel] }>{ item.prefix }:</Text> }
+                                                  <Text numberOfLines={2} style={ [Styles.textDark, Styles.flex] }>{ item.title }</Text>
                                                   { (Object.keys(props.collection.videos)[0] == item.id) && <Text style={ [Styles.textXSmall, Styles.textLable] }>(NEXT)</Text> }
                                               </View>
                                               <Text numberOfLines={2} style={ [Styles.textLabel, Styles.textSmall, Styles.halfMarginBottom] }>
@@ -137,18 +146,18 @@ const Collection = function (props) {
                                               </Text>
                                               <View style={ [Styles.flex, Styles.flexRow, Styles.flexJustifyStart, Styles.flexAlignCenter, Styles.halfPaddingLeft] }>
                                                   { !!item.views && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.halfMarginRight] }>
-                                                        <Icon name="eye" ios="ios-eye" android="md-eye" style={ [Styles.textSmall, Styles.textUbandani] } />
-                                                        <Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.views) }</Text>
+                                                        <Icon name="eye" ios="ios-eye" android="md-eye" style={ [Styles.textSmall, Styles.textPlaceholder] } />
+                                                        <Text style={ [Styles.textSmall, Styles.textPlaceholder] }> { abbreviateNumber(item.views) }</Text>
                                                     </View>
                                                   }
                                                   { !isEmpty(item.shares) && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.halfMarginRight] }>
-                                                        <Icon name="share" ios="ios-share" android="md-share" style={ [Styles.textSmall, Styles.textUbandani] } />
-                                                        <Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.shares.length) }</Text>
+                                                        <Icon name="share" ios="ios-share" android="md-share" style={ [Styles.textSmall, Styles.textPlaceholder] } />
+                                                        <Text style={ [Styles.textSmall, Styles.textPlaceholder] }> { abbreviateNumber(item.shares.length) }</Text>
                                                     </View>
                                                   }
                                                   { !isEmpty(item.likes) && <View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.halfMarginRight] }>
-                                                        <Icon name="heart" ios="ios-heart" android="md-heart" style={ [Styles.textSmall, Styles.textUbandani] } />
-                                                        <Text style={ [Styles.textSmall, Styles.textUbandani] }> { abbreviateNumber(item.likes.length) }</Text>
+                                                        <Icon name="heart" ios="ios-heart" android="md-heart" style={ [Styles.textSmall, Styles.textPlaceholder] } />
+                                                        <Text style={ [Styles.textSmall, Styles.textPlaceholder] }> { abbreviateNumber(item.likes.length) }</Text>
                                                     </View>
                                                   }
                                               </View>
@@ -156,14 +165,6 @@ const Collection = function (props) {
                                       </ListItem>
                                   }
                                 />
-                            }
-                            { isEmpty(props.collection.videos) && !props.videosLoading && <View style={ [Styles.flex, Styles.flexColumn, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.doublePaddingTop, Styles.doublePaddingBottom] }>
-                                  <Text style={ [Styles.textLabel, Styles.textAlignCenter, Styles.padding, Styles.margin] }>No videos found</Text>
-                              </View>
-                            }
-                            { props.videosLoading && <View style={ [Styles.positionAbsolute, Styles.verticalPositionTop, Styles.verticalPositionBottom, Styles.horizontalPositionLeft, Styles.horizontalPositionRight, Styles.flex, Styles.flexColumn, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.height100, Styles.backgroundKimyaKimyaLightTransluscent] }>
-                                  <Spinner color={ Styles['textUbandani'].color } />
-                              </View>
                             }
                         </View>
                     </View>

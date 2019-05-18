@@ -23,6 +23,9 @@ buildscript {
         leolinShortcutBadgerVersion = "1.1.22"
 
         proguardGradleVersion = "6.0.1"
+
+        okHttpVersion = "3.13.1"
+        okioVersion = "2.2.2"
     }
     repositories {
         google()
@@ -79,7 +82,6 @@ subprojects {
         }
     }
 }
-
 
 // task wrapper(type: Wrapper) {
 //     gradleVersion = '5.1.1'

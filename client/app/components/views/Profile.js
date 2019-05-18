@@ -3,8 +3,7 @@
  */
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Container, ActionSheet, Left, Body, Right, Content, Text, List, ListItem, Spinner, Button, Icon } from 'native-base';
-import AnimatedHeader from 'react-native-animated-header'; // Version can be specified in package.json
+import { Container, ActionSheet, Left, Body, Right, Content, Text, List, ListItem, Spinner, Button, Icon } from 'native-base'; // Version can be specified in package.json
 
 /**
  * Import Utilities
@@ -16,6 +15,7 @@ import isIOS from '../../utilities/isIOS';
 /**
  * Import other components
 */
+import AnimatedHeader from '../../components/others/AnimatedHeader';
 import IconBox from './../others/IconBox';
 import StatusBar from '../../components/others/StatusBar';
 
@@ -30,7 +30,6 @@ const Profile = function (props) {
         	<AnimatedHeader
               style={ [Styles.flex] }
               title="Mama Nevi"
-              titleStyle={{ fontSize: 22, left: 17, bottom: 20, color: Styles.textUbandaniLight.color, ...Styles.textShadow }}
               renderLeft={ () =>
                   <Button iconLeft transparent onPress={ props.back }>
                       <Icon name="arrow-back" ios="ios-arrow-back" android="md-arrow-back" style={ [Styles.textUbandaniLight, Styles.textShadow, styles.headerIcon] } />
@@ -43,27 +42,32 @@ const Profile = function (props) {
                       { isIOS() && <Text style={ [Styles.textUbandaniLight, Styles.textShadow] }>Settings</Text> }
                   </Button>
               }
-              headerMaxHeight={ 240 }
+              titleStyle={ [Styles.textXXLarge, Styles.textShadow, { color: props.headerTitleColor }] }
+              headerDefaultHeight={ 240 }
+              headerMaxHeight={ 340 }
               noBorder={ true }
-              imageSource={ require('../../assets/md_Profile_Placeholder.png') }
-              toolBarColor={ (isIOS())? 'transparent' : Styles.backgroundUbandani.backgroundColor }
+              imageSource={ (!!props.profilePicture)? props.profilePicture : props.defaultProfilePicture }
+              imageHeight={ 240 }
+              toolbarColor={ props.headerBackgroundColor }
+              statusbarStyle={ props.statusbarStyle }
             >
-              	<Content>
-              		<StatusBar />
+              	<Content style={ [Styles.backgroundKimyaKimyaLight] }>
+              		
+              		<StatusBar backgroundColor={ (isIOS())? 'transparent' : Styles.backgroundUbandani.backgroundColor } barStyle="light-content" />
     				
     				<List>
     					<ListItem itemDivider style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.doublePadding] }>
 	      					<View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.margin] }>
-	      						  <Icon name="eye" ios="ios-eye" android="md-eye" style={ [Styles.textUbandani, Styles.textMedium] } />
-	      						  <Text style={ [Styles.textMedium, Styles.halfMarginLeft, Styles.textUbandani] }> 200</Text>
+	      						  <Icon name="eye" ios="ios-eye" android="md-eye" style={ [Styles.textPlaceholder, Styles.textLarge] } />
+	      						  <Text style={ [Styles.textMedium, Styles.textPlaceholder, Styles.textSmall] }> 200</Text>
 	      					</View>
 	      					<View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.margin] }>
-	      						  <Icon name="share" ios="ios-share" android="md-share" style={ [Styles.textUbandani, Styles.textMedium] } />
-	      						  <Text style={ [Styles.textMedium, Styles.halfMarginLeft, Styles.textUbandani] }> 100</Text>
+	      						  <Icon name="share" ios="ios-share" android="md-share" style={ [Styles.textPlaceholder, Styles.textLarge] } />
+	      						  <Text style={ [Styles.textMedium, Styles.textPlaceholder, Styles.textSmall] }> 100</Text>
 	      					</View>
 	      					<View style={ [Styles.flexRow, Styles.flexJustifyCenter, Styles.flexAlignCenter, Styles.margin] }>
-	      						  <Icon name="heart" ios="ios-heart" android="md-heart" style={ [Styles.textUbandani, Styles.textMedium] } />
-	      						  <Text style={ [Styles.textMedium, Styles.halfMarginLeft, Styles.textUbandani] }> 50</Text>
+	      						  <Icon name="heart" ios="ios-heart" android="md-heart" style={ [Styles.textPlaceholder, Styles.textLarge] } />
+	      						  <Text style={ [Styles.textMedium, Styles.textPlaceholder, Styles.textSmall] }> 50</Text>
 	      					</View>
 	    				</ListItem>
 	    				<ListItem noIndent style={ [Styles.noBorderBottom, Styles.halfPaddingTop, Styles.halfPaddingBottom] }>

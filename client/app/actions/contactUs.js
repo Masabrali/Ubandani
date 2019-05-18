@@ -32,7 +32,8 @@ export default function(message) {
                     let _message = {
                         message: message.message,
                         user: firebase.auth().currentUser.uid,
-                        read: false
+                        read: false,
+                        date: firebase.database.ServerValue.TIMESTAMP
                     };
 
                     const _contactUs = (screenshot) => {
@@ -48,7 +49,12 @@ export default function(message) {
                         }, errorHandler)
                         .catch(handleError);
 
-                        if (!isEmpty(screenshot)) _message.screenshot = screenshot.ref;
+                        if (!isEmpty(screenshot)) {
+
+                            _message._screenshot = screenshot.ref;
+
+                            _message.screenshot = screenshot.downloadURL;
+                        }
 
                         return (
                             dbRef.push(_message)

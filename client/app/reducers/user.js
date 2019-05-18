@@ -42,6 +42,18 @@ export default function (state = {}, action = {}) {
 
             return action.user;
 
+        case 'USER_COLORS_FETCHED':
+
+            state.colors = action.colors;
+
+            return { ...state };
+
+        case 'FCM_TOKEN_FETCHED':
+
+            state.fcm_token = action.token;
+
+            return { ...state };
+
         case 'USER_LOGGED_OUT':
 
             return {};
